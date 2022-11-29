@@ -26,7 +26,8 @@
     }
   }
 </script>
-
+<div>
+  <h3 class="text-xl mt-3">Image Carousel</h3>
 {#each [gallery_items[currentSlideItem]] as item (currentSlideItem)}
   <img class="cursor-pointer" in:fade src={item.url} alt={item.description} width={400} height={300} on:click={() => nextImage()}/>
 {/each}
@@ -36,4 +37,5 @@
     <img class="cursor-pointer {currentSlideItem === i && 'ring-offset-0 border-primary border '}" on:click={()=>currentSlideItem = i } src={item.url} axlt={item.description} width={50} height={50}/>
   {/each}
     <button on:click={() => nextImage()}>▶</button>
+</div>
 </div>
