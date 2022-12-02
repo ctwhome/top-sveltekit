@@ -21,19 +21,24 @@ With 🧡 from [@ctwhome](https://github.com/ctwhome), feature-complete (WIP) ac
 *   [x] Styled Markdown HTML components and page routing
     *   [x] Render Svelte Components and HTML from markdown
     *   [x] Route-based \*.md pages
-*   [x] All icons demand - +100.000 SVG icons completely customizable with Unplugin Icons
+*   [x] Unplugin Icons- All icons demand - +100.000 SVG icons completely customizable
+*   [x] SVG as a component (package)
+*   [x] Cloud functions with endpoints and *-adapter (Node, Vercel and Netlify)
 *   [ ] i18n Multi-language support
 *   [ ] Vitest (with JSDom and @testing-library/svelte)
-*   [ ] SVG as a component (package)
+
+
+
 
 ### BaaS (Backend-as-a-service)
 
-*   [ ] Supabase (Auth, Realtime, Storage, and of course PostgreSQL)
+*   [x] Supabase (Auth, Realtime, Storage, and of course PostgreSQL)
 *   [ ] Firebase
 *   [ ] Appwrite
 
 ### Feature examples
 
+*   [x] Markdown route based blog
 *   [ ] Scrolly telling (@svelte/scrolling)
 *   [ ] CRUD Todo
 *   [ ] Consuming API
@@ -41,6 +46,9 @@ With 🧡 from [@ctwhome](https://github.com/ctwhome), feature-complete (WIP) ac
 ### Extras
 
 *   [x] Native File API with IndexedDB persistance
+*   [x] Native File API with IndexedDB persistance
+
+
 *   [ ] Feed RSS generator
 
 
