@@ -46,8 +46,7 @@ With 🧡 from [@ctwhome](https://github.com/ctwhome), feature-complete (WIP) ac
 ### Extras
 
 *   [x] Native File API with IndexedDB persistance
-*   [x] Native File API with IndexedDB persistance
-
+*   [x] Search Autocompete with defer
 
 *   [ ] Feed RSS generator
 
