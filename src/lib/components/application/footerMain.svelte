@@ -1,5 +1,5 @@
 <script>
-	import Socialicons from '$components/SocialIcons.svelte';
+	import Socialicons from '$components/ui/SocialIcons.svelte';
 	let className = undefined; // class is a reserved keyword in JS, with initialization
 	export { className as class };
 </script>
@@ -55,7 +55,7 @@
 				<br />
 				And ultimately,
 				<strong>Technology</strong>
-				 should empower people.
+				should empower people.
 			</div>
 		</div>
 		<div class="flex mx-auto sm:mr-0 mt-10 gap-10 items-center">

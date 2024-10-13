@@ -5,7 +5,7 @@
 	import FeedbackButton from '$lib/components/feedback/FeedbackButton.svelte';
 	import DaisyUIThemeSwitcher from '$lib/components/themeChamge/DaisyUIThemeSwitcher.svelte';
 	import { onMount } from 'svelte';
-	import Login from './Login/LoginButton.svelte';
+	import Login from '../Login/LoginButton.svelte';
 	import { toggleMenu } from '$lib/stores/menu.store';
 	import IconamoonMenuBurgerHorizontalBold from '~icons/iconamoon/menu-burger-horizontal-bold';
 

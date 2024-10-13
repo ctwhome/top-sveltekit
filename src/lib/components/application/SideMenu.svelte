@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isMenuOpen, closeMenu, openMenu } from '$lib/stores/menu.store';
-	import ChatList from './chats/ChatList.svelte';
-	import FeedbackButton from './feedback/FeedbackButton.svelte';
+	import FeedbackButton from '../feedback/FeedbackButton.svelte';
 	import { onMount } from 'svelte';
 
 	let containerElement: HTMLElement;
@@ -95,9 +94,7 @@
 	<nav
 		class="fixed top-0 left-0 bottom-0 z-50 w-64 bg-base-100 shadow-lg grid grid-rows-[1fr_auto] overflow-hidden p-4 sm:hidden"
 	>
-		<div class="pt-16 flex-1 overflow-y-auto">
-			<ChatList />
-		</div>
+		<div class="pt-16 flex-1 overflow-y-auto">Content here</div>
 
 		<FeedbackButton />
 	</nav>

@@ -8,11 +8,11 @@ export const load: LayoutServerLoad = async (event) => {
 
   if (session?.user?.id) {
     if (event.url.pathname === '/') {
-      throw redirect(302, '/chat');
+      throw redirect(302, '/profile');
     }
   }
   else {
-    if (event.url.pathname === '/chat') {
+    if (event.url.pathname === '/profile') {
       throw redirect(302, '/');
     }
   }

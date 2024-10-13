@@ -14,16 +14,4 @@
 	<div>%sveltekit.body%</div>
 </body>
 
-<script>
-	// Get all image elements on the page
-	const allImages = document.querySelectorAll('img');
-
-	// Loop through each image and prevent dragging
-	allImages.forEach(img => {
-		img.addEventListener('dragstart', function (event) {
-			event.preventDefault();
-		});
-	});
-</script>
-
 </html>
