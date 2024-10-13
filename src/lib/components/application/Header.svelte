@@ -8,23 +8,14 @@
 	import Login from '../Login/LoginButton.svelte';
 	import { toggleMenu } from '$lib/stores/menu.store';
 	import IconamoonMenuBurgerHorizontalBold from '~icons/iconamoon/menu-burger-horizontal-bold';
+	import menuItems from '$lib/models/menu-itmes';
 
 	let active = 'Latest Work';
 	let activeCategory = '';
 	let activeTag = '';
 	let isDesktop = true;
 
-	$: {
-		if (browser) {
-			activeCategory = $page.url.searchParams.get('category');
-			activeTag = $page.url.searchParams.get('tag');
-		}
-	}
-
 	onMount(() => {
-		activeCategory = $page.url.searchParams.get('category') || '';
-		activeTag = $page.url.searchParams.get('tag') || '';
-
 		const mediaQuery = window.matchMedia('(min-width: 640px)');
 		isDesktop = mediaQuery.matches;
 
@@ -38,10 +29,6 @@
 			mediaQuery.removeEventListener('change', handleMediaQueryChange);
 		};
 	});
-
-	const links = [
-		// Add your menu items here
-	];
 </script>
 
 <nav class="bien-nav mb-10">
@@ -66,7 +53,7 @@
 
 			<!-- Desktop menu -->
 			<div class="z-10 flex-1 space-x-4 lg:space-x-8 w-full justify-end hidden sm:flex">
-				{#each links as link}
+				{#each menuItems as link}
 					<a
 						class="menu-link"
 						on:click={() => (active = link.title)}

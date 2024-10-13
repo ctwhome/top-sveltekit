@@ -59,7 +59,13 @@
 			</div>
 		</div>
 		<div class="flex mx-auto sm:mr-0 mt-10 gap-10 items-center">
-			<a href="/work" class="hover:text-primary opacity-70 hover:opacity-100">Latest work</a>
+			<a
+				href="https://ctwhome.com"
+				target="_blank"
+				class="hover:text-primary opacity-70 hover:opacity-100"
+			>
+				Latest work
+			</a>
 			<Socialicons />
 			<!-- todo -->
 		</div>
