@@ -1,24 +1,21 @@
-import cookie from 'cookie';
-import { v4 as uuid } from '@lukeed/uuid';
-import type { Handle } from '@sveltejs/kit';
+// https://kit.svelte.dev/docs/hooks
+import { env } from '$env/dynamic/private';
+import { sequence } from '@sveltejs/kit/hooks';
+import { handleAuth } from "./auth";
+import { pool } from "$lib/db/db";
 
-export const handle: Handle = async ({ event, resolve }) => {
-	const cookies = cookie.parse(event.request.headers.get('cookie') || '');
-	event.locals.userid = cookies.userid || uuid();
+// Initialize the database connection
+// console.log('🎹 DATABASE_URL', env.DATABASE_URL, env.DB_USER);
 
-	const response = await resolve(event);
+// Set the app.user_id in the database to enable row level security
+async function setAppUser({ event, resolve }) {
+  const session = await event.locals.getSession();
+  if (session?.user?.id) {
+    await pool.query('SELECT set_app_user($1)', [session.user.id]);
+  } else {
+    await pool.query('SELECT set_app_user(NULL)');
+  }
+  return resolve(event);
+}
 
-	if (!cookies.userid) {
-		// if this is the first time the user has visited this app,
-		// set a cookie so that we recognise them when they return
-		response.headers.set(
-			'set-cookie',
-			cookie.serialize('userid', event.locals.userid, {
-				path: '/',
-				httpOnly: true
-			})
-		);
-	}
-
-	return response;
-};
+export const handle = sequence(handleAuth, setAppUser);

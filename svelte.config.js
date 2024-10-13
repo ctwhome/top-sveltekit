@@ -1,33 +1,35 @@
 import path from 'path';
+// import adapter from '@sveltejs/adapter-node';
 import adapter from '@sveltejs/adapter-vercel';
-import preprocess from 'svelte-preprocess';
-import { mdsvex } from 'mdsvex';
-// import svg as Svelte components
-import svg from '@poppanator/sveltekit-svg';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { mdsvex } from "mdsvex";
+import mdsvexConfig from './mdsvex.config.js'
+
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	extensions: ['.svelte', '.svelte.md', '.md'],
 
-	// Consult https://github.com/sveltejs/svelte-preprocess
+	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess: [
-		preprocess(),
-		mdsvex({
-			extensions: ['.svelte.md', '.md'],
-			// rehypePlugins: rehypePlugins,
-			layout: {
-				_: 'src/routes/_markdown.svelte'
-			}
-		})
+		vitePreprocess(),
+		mdsvex(mdsvexConfig),
 	],
-
+	// extensions: ['.svelte', '.md', '.svx'],
+	extensions: [
+		'.svelte',
+		...mdsvexConfig.extensions
+	],
 	kit: {
-		adapter: adapter(),
+		// https://kit.svelte.dev/docs/adapter-static
+		adapter: adapter({
+			// runtime: 'edge',
+			fallback: '200.html' // may differ from host to host
+		}),
+
 		alias: {
 			// these are the aliases and paths to them
 			$api: path.resolve('./src/api'),
-			$lib: path.resolve('./src/lib'),
 			$components: path.resolve('./src/lib/components'),
 			$assets: path.resolve('./src/assets'),
 			$content: path.resolve('./src/content')
