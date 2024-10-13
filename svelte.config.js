@@ -23,7 +23,7 @@ const config = {
 	kit: {
 		// https://kit.svelte.dev/docs/adapter-static
 		adapter: adapter({
-			// runtime: 'edge',
+			runtime: 'edge',
 			fallback: '200.html' // may differ from host to host
 		}),
 
