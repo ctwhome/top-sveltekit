@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LoginButton from '$components/Login/LoginButton.svelte';
+	import Todo from '$lib/components/Todo.svelte';
 </script>
 
 <div class="flex flex-col items-center justify-center overflow-auto">
@@ -14,5 +15,9 @@
 				<LoginButton />
 			</div>
 		</div>
+	</div>
+
+	<div class="mt-10">
+		<Todo />
 	</div>
 </div>

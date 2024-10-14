@@ -78,12 +78,14 @@
 	"dependencies": {
 		"@auth/pg-adapter": "^1.7.0",
 		"@auth/sveltekit": "^1.7.0",
+		"@electric-sql/client": "^0.6.2",
 		"@google/generative-ai": "^0.21.0",
 		"@types/bcrypt": "^5.0.2",
 		"@types/sortablejs": "^1.15.8",
 		"bcrypt": "^5.1.1",
 		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.5",
+		"electric-sql": "^0.12.1",
 		"node-html-parser": "^6.1.13",
 		"node-pg-migrate": "^7.7.1",
 		"pg": "^8.13.0",
@@ -91,6 +93,7 @@
 		"svelte-french-toast": "^1.2.0",
 		"svelte-persisted-store": "^0.11.0",
 		"theme-change": "^2.5.0",
-		"vanilla-tilt": "^1.8.1"
+		"vanilla-tilt": "^1.8.1",
+		"wa-sqlite": "^1.0.0"
 	}
 }

@@ -1,0 +1,9 @@
+{
+  "database": "postgresql://postgres:postgres@localhost:5432/electric",
+  "migrations": {
+    "directory": "migrations"
+  },
+  "proxy": {
+    "port": 5133
+  }
+}
