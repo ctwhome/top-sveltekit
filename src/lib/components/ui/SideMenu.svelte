@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isMenuOpen, closeMenu, openMenu } from '$lib/stores/menu.store';
-	import FeedbackButton from '../feedback/FeedbackButton.svelte';
+	import FeedbackButton from '$lib/components/ui/feedback/FeedbackButton.svelte';
 	import { onMount } from 'svelte';
 
 	let containerElement: HTMLElement;
@@ -87,21 +87,21 @@
 <div bind:this={containerElement} class="side-menu-container sm:hidden">
 	<!-- Background overlay (max 60% opacity) -->
 	<div
-		class="fixed inset-0 z-40 bg-black pointer-events-none sm:hidden"
+		class="pointer-events-none fixed inset-0 z-40 bg-black sm:hidden"
 		style="opacity: var(--overlay-opacity);"
 	></div>
 
 	<nav
-		class="fixed top-0 left-0 bottom-0 z-50 w-64 bg-base-100 shadow-lg grid grid-rows-[1fr_auto] overflow-hidden p-4 sm:hidden"
+		class="fixed bottom-0 left-0 top-0 z-50 grid w-64 grid-rows-[1fr_auto] overflow-hidden bg-base-100 p-4 shadow-lg sm:hidden"
 	>
-		<div class="pt-16 flex-1 overflow-y-auto">Content here</div>
+		<div class="flex-1 overflow-y-auto pt-16">Content here</div>
 
 		<FeedbackButton />
 	</nav>
 
 	<!-- Clickable area to close menu when open -->
 	{#if $isMenuOpen}
-		<div class="fixed inset-0 z-45 sm:hidden" on:click={closeMenu}></div>
+		<div class="z-45 fixed inset-0 sm:hidden" on:click={closeMenu}></div>
 	{/if}
 </div>
 
