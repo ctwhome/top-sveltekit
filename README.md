@@ -23,6 +23,26 @@ Run locally:
 pnpm dev
 ```
 
+## Using the Makefile to run docker compose for powersync
+
+### Development
+To run the development version of the docker compose for powersync, use the following command:
+```bash
+make dev
+```
+
+### Local
+To run the local version of the docker compose for powersync, use the following command:
+```bash
+make local
+```
+
+### Production
+To run the production version of the docker compose for powersync, use the following command:
+```bash
+make prod
+```
+
 ## Updating fork
 1.  Add remote from the original repository in your forked repository:
 ```shell
@@ -45,4 +65,3 @@ Build the application for production:
 ```bash
 pnpm build
 ```
-
