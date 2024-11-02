@@ -1,5 +1,5 @@
 export const siteSettings = {
-  title: 'Ctwhome - Portfolio',
+  title: 'Ctwhome - Top Sveltekit',
   description: 'Web Engineering - Projects and Portfolio of J. Gonzalez',
   baseUrl: 'https://ctwhome.com',
   twitterHandle: '@ctwhome',

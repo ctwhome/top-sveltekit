@@ -12,7 +12,7 @@ export default defineConfig({
 		enhancedImages(),
 
 		VitePluginRestart({ restart: ['./content/**'] }),
-		viteStaticCopy({ targets: [{ src: './src/content/*', dest: './content/' }] }),
+		viteStaticCopy({ targets: [{ src: './src/lib/content/*', dest: './content/' }] }),
 
 		sveltekit(),
 		Icons({

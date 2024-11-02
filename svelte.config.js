@@ -32,7 +32,7 @@ const config = {
 			$api: path.resolve('./src/api'),
 			$components: path.resolve('./src/lib/components'),
 			$assets: path.resolve('./src/assets'),
-			$content: path.resolve('./src/content')
+			$content: path.resolve('./src/lib/content')
 		}
 	}
 };

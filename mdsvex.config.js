@@ -17,9 +17,9 @@ export default {
     dashes: 'oldschool'
   },
   layout: {
-    _: "/src/markdown-layouts/default.svelte", // Default layout for markdown files
-    blog: "/src/markdown-layouts/blog.svelte",
-    project: "/src/markdown-layouts/project.svelte",
+    _: "/src/lib/markdown-layouts/default.svelte", // Default layout for markdown files
+    blog: "/src/lib/markdown-layouts/blog.svelte",
+    project: "/src/lib/markdown-layouts/project.svelte",
   },
   remarkPlugins: [
     videos,
