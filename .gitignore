@@ -13,3 +13,5 @@ vite.config.ts.timestamp-*
 .vercel
 .jampack
 .idea
+firebase-debug.log
+firestore-emulator-data
