@@ -5,7 +5,7 @@
 
 	import { onMount } from 'svelte';
 
-	let apiKey = '';
+	let apiKey = $state('');
 
 	onMount(async () => {
 		// Fetch the API key from the server when the component mounts
@@ -45,7 +45,7 @@
 				bind:value={apiKey}
 				placeholder="Enter your OpenAI API key"
 			/>
-			<button class="btn join-item" on:click={saveApiKey}>Save</button>
+			<button class="btn join-item" onclick={saveApiKey}>Save</button>
 		</div>
 	{:else}
 		Not logged in

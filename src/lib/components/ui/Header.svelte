@@ -10,10 +10,10 @@
 	import IconamoonMenuBurgerHorizontalBold from '~icons/iconamoon/menu-burger-horizontal-bold';
 	import menuItems from '$lib/models/menu-itmes';
 
-	let active = 'Latest Work';
+	let active = $state('Latest Work');
 	let activeCategory = '';
 	let activeTag = '';
-	let isDesktop = true;
+	let isDesktop = $state(true);
 
 	onMount(() => {
 		const mediaQuery = window.matchMedia('(min-width: 640px)');
@@ -32,14 +32,14 @@
 </script>
 
 <nav class="bien-nav mb-10">
-	<div class="bien-glass" />
-	<div class="bien-glass-edge" />
+	<div class="bien-glass"></div>
+	<div class="bien-glass-edge"></div>
 	<div class="container relative mx-auto py-2">
 		<!--Desktop Header-->
 		<header class="flex items-center gap-3 px-2 sm:px-0">
 			<button
 				class="rounded-md p-2 transition-colors duration-200 hover:bg-base-200 sm:hidden"
-				on:click={toggleMenu}
+				onclick={toggleMenu}
 				aria-label="Open menu"
 			>
 				<IconamoonMenuBurgerHorizontalBold class="size-6" />
@@ -56,7 +56,7 @@
 				{#each menuItems as link}
 					<a
 						class="menu-link"
-						on:click={() => (active = link.title)}
+						onclick={() => (active = link.title)}
 						class:active={activeCategory === link.title}
 						href={link.path}
 					>

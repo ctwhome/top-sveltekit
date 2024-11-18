@@ -5,10 +5,14 @@
 	import { page } from '$app/stores';
 	import { toastStore } from '$lib/stores/toast.store';
 
-	export let showButton = true;
+	interface Props {
+		showButton?: boolean;
+	}
 
-	let textarea: HTMLTextAreaElement;
-	let modal: HTMLDialogElement;
+	let { showButton = true }: Props = $props();
+
+	let textarea: HTMLTextAreaElement = $state();
+	let modal: HTMLDialogElement = $state();
 
 	export const openFeedbackModal = writable(() => {});
 
@@ -104,7 +108,7 @@
 </script>
 
 {#if showButton}
-	<button class="btn btn-sm" on:click={() => modal.showModal()}>Feedback</button>
+	<button class="btn btn-sm" onclick={() => modal.showModal()}>Feedback</button>
 {/if}
 
 <dialog id="feedback_modal" class="modal">
@@ -119,11 +123,11 @@
 			rows="6"
 		></textarea>
 		<div class="modal-action justify-between">
-			<button class="btn" on:click={closeModal}>Cancel</button>
-			<button class="btn btn-primary" on:click={sendFeedback}>Send Feedback</button>
+			<button class="btn" onclick={closeModal}>Cancel</button>
+			<button class="btn btn-primary" onclick={sendFeedback}>Send Feedback</button>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
-		<button on:click={closeModal}>Cancel</button>
+		<button onclick={closeModal}>Cancel</button>
 	</form>
 </dialog>

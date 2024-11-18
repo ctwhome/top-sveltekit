@@ -1,25 +1,25 @@
-<script>
+<script lang="ts">
 	import Socialicons from '$components/ui/SocialIcons.svelte';
-	let className = undefined; // class is a reserved keyword in JS, with initialization
-	export { className as class };
+	let { class: className = undefined } = $props();
+	
 </script>
 
 <section class={' ' + className}>
 	<div class="flex w-full">
 		<div class="w-1/3 flex">
-			<div class="w-1/3 py-0 h-1" style="background: #456563;" />
-			<div class="w-1/3 py-0 h-1" style="background: #5A877E;" />
-			<div class="w-1/3 py-0 h-1" style="background: #FDC343;" />
+			<div class="w-1/3 py-0 h-1" style="background: #456563;"></div>
+			<div class="w-1/3 py-0 h-1" style="background: #5A877E;"></div>
+			<div class="w-1/3 py-0 h-1" style="background: #FDC343;"></div>
 		</div>
 		<div class="w-1/3 flex">
-			<div class="w-1/3 py-0 h-1" style="background: #E99877;" />
-			<div class="w-1/3 py-0 h-1" style="background: #A4574E;" />
-			<div class="w-1/3 py-0 h-1" style="background: #FDC343;" />
+			<div class="w-1/3 py-0 h-1" style="background: #E99877;"></div>
+			<div class="w-1/3 py-0 h-1" style="background: #A4574E;"></div>
+			<div class="w-1/3 py-0 h-1" style="background: #FDC343;"></div>
 		</div>
 		<div class="w-1/3 flex">
-			<div class="w-1/3 py-0 h-1" style="background: #456563;" />
-			<div class="w-1/3 py-0 h-1" style="background: #5A877E;" />
-			<div class="w-1/3 py-0 h-1" style="background: #FDC343;" />
+			<div class="w-1/3 py-0 h-1" style="background: #456563;"></div>
+			<div class="w-1/3 py-0 h-1" style="background: #5A877E;"></div>
+			<div class="w-1/3 py-0 h-1" style="background: #FDC343;"></div>
 		</div>
 	</div>
 	<div class="container flex-wrap flex items-center mx-auto px-4 py-6">

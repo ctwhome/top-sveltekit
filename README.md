@@ -1,5 +1,5 @@
 # Ctwhome top-sveltekit
-Unified template with SvelteKit, TailwindCSS, DaisyUI, Auth, Postgres, and more.\
+Unified template with SvelteKit (Svelte 5), TailwindCSS, DaisyUI, Auth, Postgres, and more.\
 by [ctwhome](https://ctwhome.com)
 
 

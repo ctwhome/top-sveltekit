@@ -16,7 +16,7 @@
 		}
 	];
 
-	let currentSlideItem = 0;
+	let currentSlideItem = $state(0);
 
 	const nextImage = () => {
 		currentSlideItem = (currentSlideItem + 1) % gallery_items.length;
@@ -41,21 +41,21 @@
 			alt={item.description}
 			width="100%"
 			height="100%"
-			on:click={() => nextImage()}
+			onclick={() => nextImage()}
 		/>
 	{/each}
 	<div class="carousel-buttons flex gap-1">
-		<button on:click={() => prevImage()}>◀</button>
+		<button onclick={() => prevImage()}>◀</button>
 		{#each gallery_items as item, i (i)}
 			<img
 				class="cursor-pointer {currentSlideItem === i && 'ring-offset-0 border-primary border '}"
-				on:click={() => (currentSlideItem = i)}
+				onclick={() => (currentSlideItem = i)}
 				src={item.url}
 				axlt={item.description}
 				width={50}
 				height={50}
 			/>
 		{/each}
-		<button on:click={() => nextImage()}>▶</button>
+		<button onclick={() => nextImage()}>▶</button>
 	</div>
 </div>

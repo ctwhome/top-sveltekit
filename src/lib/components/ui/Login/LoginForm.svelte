@@ -1,16 +1,18 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	// import Logo from '$lib/assets/icons/Logo.svelte';
 	import BiGoogle from '~icons/bi/google';
 	import MingcuteMailSendLine from '~icons/mingcute/mail-send-line';
 	import PhKeyBold from '~icons/ph/key-bold';
 	import { signIn } from '@auth/sveltekit/client';
 
-	let email = '';
+	let email = $state('');
 	let password = '';
-	let error = '';
+	let error = $state('');
 
 	let openCredentials = false;
-	let openMagicLink = true;
+	let openMagicLink = $state(true);
 
 	function handleGoogleSignIn() {
 		signIn('google');
@@ -47,7 +49,7 @@
 		<button
 			type="button"
 			class="btn btn-primary"
-			on:click={() => loginWithSocialProvider('google')}
+			onclick={() => loginWithSocialProvider('google')}
 		>
 			<BiGoogle />
 			Login with Google
@@ -57,7 +59,7 @@
 		<button
 			class="btn"
 			class:hidden={openMagicLink}
-			on:click={() => (openMagicLink = !openMagicLink)}
+			onclick={() => (openMagicLink = !openMagicLink)}
 		>
 			<MingcuteMailSendLine class="size-5" />
 			Send Magic Link
@@ -65,7 +67,7 @@
 		<form
 			class="p-3 border rounded-box border-base-300"
 			class:hidden={!openMagicLink}
-			on:submit|preventDefault={handleMagicLinkSignIn}
+			onsubmit={preventDefault(handleMagicLinkSignIn)}
 		>
 			<div class="form-control">
 				<input

@@ -6,11 +6,11 @@
 	import { deleteDB, openDB } from 'idb';
 	import { onMount } from 'svelte';
 
-	let numberFiles = { rootName: '', directories: 0, files: 0 };
+	let numberFiles = $state({ rootName: '', directories: 0, files: 0 });
 	let loadingFiles = false;
 	let db = null;
 	let arrayTree = [];
-	let tree = {};
+	let tree = $state({});
 	// Object.keys(tree).length !== 0
 	onMount(async () => {
 		// Create DB in indexDB
@@ -109,11 +109,11 @@
 	<!--    file system when reloading. The user needs to grand access once again.-->
 	<!--  </p>-->
 
-	<div class="btn" on:click={open}>Open directory</div>
+	<div class="btn" onclick={open}>Open directory</div>
 	<div>
 		<pre>{JSON.stringify(numberFiles, null, 2)}</pre>
 		{#each Object.values(tree) as { name, handle }}
-			<div class="hover:bg-gray-500 cursor-pointer" on:click={() => fileClicked(handle)}>
+			<div class="hover:bg-gray-500 cursor-pointer" onclick={() => fileClicked(handle)}>
 				{name}
 			</div>
 			<!--      <div>{item[0]} -  <pre>{JSON.stringify(item[1], null, 2)}</pre>{item[1]}</div>-->
