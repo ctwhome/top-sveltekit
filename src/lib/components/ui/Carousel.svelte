@@ -32,29 +32,31 @@
 </script>
 
 <div>
-	<h3 class="text-xl mt-3">Image Carousel</h3>
+	<h3 class="mt-3 text-xl">Image Carousel</h3>
 	{#each [gallery_items[currentSlideItem]] as item (currentSlideItem)}
-		<img
-			class="cursor-pointer"
-			in:fade
-			src={item.url}
-			alt={item.description}
-			width="100%"
-			height="100%"
-			onclick={() => nextImage()}
-		/>
+		<button type="button" onclick={() => nextImage()} aria-label="Next image">
+			<img
+				class="cursor-pointer"
+				in:fade
+				src={item.url}
+				alt={item.description}
+				width="100%"
+				height="100%"
+			/>
+		</button>
 	{/each}
 	<div class="carousel-buttons flex gap-1">
 		<button onclick={() => prevImage()}>◀</button>
 		{#each gallery_items as item, i (i)}
-			<img
-				class="cursor-pointer {currentSlideItem === i && 'ring-offset-0 border-primary border '}"
+			<button
+				type="button"
+				class="cursor-pointer {currentSlideItem === i && 'border border-primary ring-offset-0 '}"
 				onclick={() => (currentSlideItem = i)}
-				src={item.url}
-				axlt={item.description}
-				width={50}
-				height={50}
-			/>
+				onkeydown={(e) => e.key === 'Enter' && (currentSlideItem = i)}
+				style="background: none; border: none; padding: 0;"
+			>
+				<img src={item.url} alt={item.description} width={50} height={50} />
+			</button>
 		{/each}
 		<button onclick={() => nextImage()}>▶</button>
 	</div>
