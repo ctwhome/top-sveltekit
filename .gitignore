@@ -15,3 +15,5 @@ vite.config.ts.timestamp-*
 .idea
 firebase-debug.log
 firestore-emulator-data
+data
+logs
