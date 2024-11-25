@@ -89,6 +89,7 @@
 		"node-pg-migrate": "^7.7.1",
 		"pg": "^8.13.0",
 		"sortablejs": "^1.15.3",
+		"surrealdb": "^1.1.0",
 		"svelte-french-toast": "^1.2.0",
 		"svelte-persisted-store": "^0.11.0",
 		"theme-change": "^2.5.0",

@@ -1,5 +1,8 @@
 version: '3.8'
 
+# Download the latest docker-compose.yml file from https://docker.surrealdb.com
+# curl -sSf https://docker.surrealdb.com -o docker-compose.yml
+
 services:
 
   pd0:
@@ -155,7 +158,7 @@ services:
     image: surrealdb/surrealdb:latest
     container_name: surrealdb
     ports:
-      - "8000:8000"
+      - "4000:8000"
     command:
       - start
       - --log=trace
