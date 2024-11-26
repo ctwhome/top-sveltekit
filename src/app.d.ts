@@ -1,12 +1,27 @@
 // See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
+import type { DefaultSession, Session } from '@auth/core/types';
+
 declare global {
 	namespace App {
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
+		interface Locals {
+			auth: Session | null;
+		}
+		interface PageData {
+			session: Session | null;
+		}
 		// interface Platform {}
 	}
 }
 
-export {};
+declare module '@auth/core/types' {
+	interface Session extends DefaultSession {
+		user: {
+			id: string;
+			email: string;
+			name?: string | null;
+			image?: string | null;
+		} & DefaultSession['user'];
+	}
+}
+
+export { };

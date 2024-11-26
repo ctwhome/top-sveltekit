@@ -15,6 +15,7 @@
 		"postbuild": "vite build --mode preview"
 	},
 	"devDependencies": {
+		"@auth/core": "^0.37.4",
 		"@divriots/jampack": "^0.30.0",
 		"@iconify-json/arcticons": "^1.2.6",
 		"@iconify-json/bi": "^1.2.1",

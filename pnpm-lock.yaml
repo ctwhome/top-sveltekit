@@ -60,6 +60,9 @@ importers:
         specifier: ^1.8.1
         version: 1.8.1
     devDependencies:
+      '@auth/core':
+        specifier: ^0.37.4
+        version: 0.37.4
       '@divriots/jampack':
         specifier: ^0.30.0
         version: 0.30.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
