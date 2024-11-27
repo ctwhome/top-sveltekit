@@ -4,7 +4,6 @@ import Google from "@auth/sveltekit/providers/google";
 import Credentials from "@auth/sveltekit/providers/credentials";
 import { sequence } from "@sveltejs/kit/hooks";
 import type { Handle } from "@sveltejs/kit";
-import type { AdapterUser } from "@auth/core/adapters";
 import bcrypt from 'bcrypt';
 
 // Auth.js configuration
@@ -116,25 +115,31 @@ const authHandle = SvelteKitAuth({
         try {
           await db.query(
             `
-            UPDATE user SET
-              name = $name,
-              image = $image,
-              emailVerified = time::now(),
-              provider = $provider
-            WHERE email = $email
-            ELSE
-            CREATE user SET
-              email = $email,
-              name = $name,
-              image = $image,
-              emailVerified = time::now(),
-              provider = $provider
+            LET $record = (SELECT * FROM user WHERE email = $email);
+            IF $record {
+              UPDATE user SET
+                name = $name,
+                image = $image,
+                emailVerified = time::now(),
+                provider = $provider,
+                provider_id = $provider_id
+              WHERE email = $email
+            } ELSE {
+              CREATE user SET
+                email = $email,
+                name = $name,
+                image = $image,
+                emailVerified = time::now(),
+                provider = $provider,
+                provider_id = $provider_id
+            }
             `,
             {
               email: user.email,
               name: user.name ?? null,
               image: user.image ?? null,
-              provider: account.provider
+              provider: account.provider,
+              provider_id: account.providerAccountId
             }
           );
         } catch (error) {

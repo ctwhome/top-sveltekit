@@ -5,24 +5,36 @@
 
 <div>
 	<!-- Logged in -->
-	<!--    v-if="isLoggedIn()" -->
 	{#if $page.data.session}
-		<a
-			href="/profile"
-			class="hover:bg-base-200 transition rounded-full h-12 w-12 flex items-center justify-center active:scale-95"
-		>
-			<img
-				alt="User avatar"
-				class="cursor-pointer h-8 w-8 rounded-full"
-				src={$page.data?.session?.user?.image ?? '/images/avatar.webp'}
-				referrerpolicy="no-referrer"
-			/>
-		</a>
+		<div class="dropdown dropdown-end">
+			<div
+				tabindex="0"
+				role="button"
+				class="flex h-12 w-12 items-center justify-center rounded-full transition hover:bg-base-200 active:scale-95"
+			>
+				<img
+					alt="User avatar"
+					class="h-8 w-8 cursor-pointer rounded-full"
+					src={$page.data?.session?.user?.image ?? '/images/avatar.webp'}
+					referrerpolicy="no-referrer"
+				/>
+			</div>
+			<ul tabindex="0" class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow">
+				<li>
+					<a href="/profile" class="flex items-center gap-2">Profile</a>
+				</li>
+				<li>
+					<form action="/auth/signout" method="POST">
+						<button type="submit" class="flex w-full items-center gap-2">Logout</button>
+					</form>
+				</li>
+			</ul>
+		</div>
 		<!-- Not logged in-->
 	{:else}
 		<div>
 			<div>
-				<label for="login-modal" class="btn btn-primary btn-md modal-button">Login access</label>
+				<label for="login-modal" class="modal-button btn btn-primary btn-md">Login access</label>
 				<input id="login-modal" type="checkbox" class="modal-toggle" />
 				<div class="modal h-screen">
 					<div class="modal-box">
