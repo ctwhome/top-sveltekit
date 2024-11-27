@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Query for existing user
     const queryResult = await db.query<UserRecord[][]>(
-      'SELECT * FROM user WHERE email = $email LIMIT 1',
+      'SELECT * FROM users WHERE email = $email LIMIT 1',
       { email }
     );
     console.log('Query result:', JSON.stringify(queryResult, null, 2));
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Create user with minimal required fields
     const createResult = await db.query<UserRecord[][]>(
-      `CREATE user CONTENT {
+      `CREATE users CONTENT {
         email: $email,
         password: $hashedPassword,
         provider: "email"

@@ -35,7 +35,7 @@ export const auth = SvelteKitAuth({
 
           // Query to get user with password
           const result = await db.query<[UserRecord[]]>(
-            'SELECT * FROM user WHERE email = $email LIMIT 1',
+            'SELECT * FROM users WHERE email = $email LIMIT 1',
             { email: credentials.email }
           );
 
@@ -57,7 +57,7 @@ export const auth = SvelteKitAuth({
 
           // Update last login
           await db.query(
-            'UPDATE user SET last_login = time::now() WHERE id = $id',
+            'UPDATE users SET last_login = time::now() WHERE id = $id',
             { id: user.id }
           );
 
@@ -99,7 +99,7 @@ export const auth = SvelteKitAuth({
 
           // Check if user exists
           const result = await db.query<[UserRecord[]]>(
-            'SELECT * FROM user WHERE email = $email LIMIT 1',
+            'SELECT * FROM users WHERE email = $email LIMIT 1',
             { email: user.email }
           );
 
@@ -108,7 +108,7 @@ export const auth = SvelteKitAuth({
           if (existingUser) {
             // Update existing user
             await db.query(
-              'UPDATE user SET name = $name, image = $image, provider = $provider, provider_id = $provider_id, last_login = time::now() WHERE id = $id',
+              'UPDATE users SET name = $name, image = $image, provider = $provider, provider_id = $provider_id, last_login = time::now() WHERE id = $id',
               {
                 id: existingUser.id,
                 name: user.name,
@@ -120,7 +120,7 @@ export const auth = SvelteKitAuth({
           } else {
             // Create new user without password field
             await db.query(
-              'CREATE user CONTENT { email: $email, name: $name, image: $image, provider: $provider, provider_id: $provider_id, last_login: time::now() }',
+              'CREATE users CONTENT { email: $email, name: $name, image: $image, provider: $provider, provider_id: $provider_id, last_login: time::now() }',
               {
                 email: user.email,
                 name: user.name,
