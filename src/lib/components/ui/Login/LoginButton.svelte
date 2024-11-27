@@ -20,14 +20,14 @@
 				/>
 			</div>
 			<ul tabindex="0" class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow">
-				<li>
+				<li class="flex gap-2">
 					<a href="/profile" class="flex items-center gap-2">Profile</a>
 				</li>
-				<li>
-					<form action="/auth/signout" method="POST">
-						<button type="submit" class="flex w-full items-center gap-2">Logout</button>
-					</form>
-				</li>
+				<form action="/auth/signout" method="POST">
+					<li class="flex gap-2">
+						<button type="submit" class="items-center gap-2">Logout</button>
+					</li>
+				</form>
 			</ul>
 		</div>
 		<!-- Not logged in-->

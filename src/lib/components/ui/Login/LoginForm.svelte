@@ -1,148 +1,75 @@
 <script lang="ts">
-	import BiGoogle from '~icons/bi/google';
 	import MingcuteMailSendLine from '~icons/mingcute/mail-send-line';
 	import PhKeyBold from '~icons/ph/key-bold';
-	import { signIn } from '@auth/sveltekit/client';
+	import GoogleLoginButton from './GoogleLoginButton.svelte';
+	import MagicLinkForm from './MagicLinkForm.svelte';
+	import EmailLoginForm from './EmailLoginForm.svelte';
+	import RegisterForm from './RegisterForm.svelte';
 
-	let email = $state('');
-	let password = $state('');
-	let error = $state('');
 	let openMagicLink = $state(false);
 	let openCredentials = $state(true);
+	let isRegistering = $state(false);
 
-	function handleGoogleSignIn() {
-		signIn('google', {
-			callbackUrl: '/profile'
-		});
-	}
-
-	function handleMagicLinkSignIn() {
-		signIn('resend', {
-			email,
-			callbackUrl: '/profile'
-		});
-	}
-
-	async function handleEmailSignIn() {
-		try {
-			const result = await signIn('credentials', {
-				email,
-				password,
-				redirect: false,
-				callbackUrl: '/profile'
-			});
-
-			if (!result?.ok) {
-				error = 'Invalid email or password';
-			} else {
-				error = '';
-				const modal = document.getElementById('login-modal') as HTMLInputElement;
-				if (modal) modal.checked = false;
-				window.location.href = result.url || '/profile';
-			}
-		} catch (e) {
-			error = 'An error occurred during sign in';
-			console.error('Sign in error:', e);
-		}
-	}
-
-	function closeModal() {
-		const modal = document.getElementById('login-modal') as HTMLInputElement;
-		if (modal) modal.checked = false;
+	function toggleRegistration() {
+		isRegistering = !isRegistering;
 	}
 </script>
 
 <div>
-	<h1 class="mb-5 text-center text-2xl font-bold">Login Access</h1>
+	<h1 class="mb-5 text-center text-2xl font-bold">
+		{isRegistering ? 'Create Account' : 'Login Access'}
+	</h1>
 	<div class="flex flex-col gap-4 p-5">
-		<!-- Google Sign In -->
-		<button type="button" class="btn btn-primary" on:click={handleGoogleSignIn}>
-			<BiGoogle />
-			Sign in with Google
-		</button>
-		<!-- <div class="divider">OR</div> -->
+		{#if !isRegistering}
+			<!-- Google Sign In -->
+			<GoogleLoginButton />
 
-		<div class="divider">OR</div>
+			<div class="divider">OR</div>
 
-		<!-- Magic Link Login -->
-		<button
-			class="btn btn-outline mt-3 w-full border-base-300"
-			class:hidden={openMagicLink}
-			on:click={() => (openMagicLink = !openMagicLink)}
-		>
-			<MingcuteMailSendLine class="size-5" />
-			Sign in with Magic Link
-		</button>
-		<form
-			class="rounded-box border border-base-300 p-3"
-			class:hidden={!openMagicLink}
-			on:submit|preventDefault={handleMagicLinkSignIn}
-		>
-			<div class="form-control">
-				<input
-					bind:value={email}
-					type="email"
-					placeholder="Enter your email"
-					class="input input-bordered"
-					required
-					autocomplete="email"
-				/>
-			</div>
-
-			{#if error}
-				<div class="mt-2 text-error">{error}</div>
-			{/if}
-
-			<button type="submit" class="btn btn-outline btn-secondary mt-3 w-full">
+			<!-- Magic Link Login -->
+			<!-- <button
+				class="btn btn-outline mt-3 w-full border-base-300"
+				class:hidden={openMagicLink}
+				on:click={() => (openMagicLink = !openMagicLink)}
+			>
 				<MingcuteMailSendLine class="size-5" />
-				Send Magic Link
+				Sign in with Magic Link
 			</button>
-		</form>
+			{#if openMagicLink}
+				<MagicLinkForm />
+			{/if} -->
+		{/if}
 
-		<!-- Email and Password Login -->
-		<button
-			class="btn btn-outline mt-3 w-full border-base-300"
-			on:click={() => (openCredentials = !openCredentials)}
-			class:hidden={!openCredentials}
-		>
-			<PhKeyBold class="size-5" />
-			Sign in with Email
-		</button>
-		<form
-			class="rounded-box border border-base-300 p-3"
-			class:hidden={openCredentials}
-			on:submit|preventDefault={handleEmailSignIn}
-		>
-			<div class="form-control">
-				<input
-					bind:value={email}
-					type="email"
-					placeholder="Enter your email"
-					class="input input-bordered"
-					required
-					autocomplete="email"
-				/>
-			</div>
-
-			<div class="form-control mt-3">
-				<input
-					bind:value={password}
-					type="password"
-					placeholder="Enter your password"
-					class="input input-bordered"
-					required
-					autocomplete="current-password"
-				/>
-			</div>
-
-			{#if error}
-				<div class="mt-2 text-error">{error}</div>
-			{/if}
-
-			<button type="submit" class="btn btn-outline btn-secondary mt-3 w-full">
+		<!-- Email Form (Login/Register) -->
+		<!-- {#if !isRegistering}
+			<button
+				class="btn btn-outline mt-3 w-full border-base-300"
+				on:click={() => (openCredentials = !openCredentials)}
+				class:hidden={!openCredentials}
+			>
 				<PhKeyBold class="size-5" />
 				Sign in with Email
 			</button>
-		</form>
+		{/if} -->
+
+		{#if isRegistering}
+			<RegisterForm on:registrationSuccess={() => (isRegistering = false)} />
+		{:else}
+			<EmailLoginForm />
+		{/if}
+
+		<div class="mt-4 text-center">
+			{#if isRegistering}
+				Already have an account?
+				<button type="button" class="link link-primary" on:click={toggleRegistration}>
+					Sign in
+				</button>
+			{:else}
+				Don't have an account?
+				<button type="button" class="link link-primary" on:click={toggleRegistration}>
+					Create one
+				</button>
+			{/if}
+		</div>
 	</div>
 </div>

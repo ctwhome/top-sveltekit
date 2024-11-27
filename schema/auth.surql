@@ -15,7 +15,7 @@ USE NS ctw DB topsveltekit;
 -- User table - stores user information
 DEFINE TABLE user SCHEMAFULL
     PERMISSIONS
-    FOR select WHERE id = $auth.id
+    FOR select FULL  -- Allow checking for existing users during registration
     FOR create FULL
     FOR update WHERE id = $auth.id
     FOR delete WHERE id = $auth.id;
@@ -25,17 +25,23 @@ DEFINE TABLE user SCHEMAFULL
 -- ------------------------------
 
 DEFINE FIELD email ON user TYPE string
-    ASSERT string::is::email($value);
+    ASSERT string::is::email($value)
+    PERMISSIONS
+    FOR select FULL;  -- Allow email field to be queried
 
-DEFINE FIELD name ON user TYPE string;
+DEFINE FIELD password ON user TYPE string
+    PERMISSIONS
+    FOR select FULL;  -- Allow password access during login
 
-DEFINE FIELD image ON user TYPE string;
+DEFINE FIELD name ON user TYPE option<string>;
+
+DEFINE FIELD image ON user TYPE option<string>;
 
 DEFINE FIELD provider ON user TYPE string
     ASSERT $value = NONE OR $value INSIDE ['email', 'google', 'github']
     DEFAULT 'email';
 
-DEFINE FIELD provider_id ON user TYPE string;
+DEFINE FIELD provider_id ON user TYPE option<string>;
 
 -- ------------------------------
 -- INDEX DEFINITIONS
@@ -72,6 +78,3 @@ DEFINE ACCESS auth_access ON DATABASE
 -- * db: Database name ("testdb")
 -- * iss: Token issuer ("surrealdb-auth")
 -- * aud: Token audience ("surrealdb-auth")
-
-
-info for db
