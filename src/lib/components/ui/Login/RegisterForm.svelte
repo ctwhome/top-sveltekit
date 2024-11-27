@@ -11,6 +11,7 @@
 	}
 
 	let email = $state('');
+	let name = $state('');
 	let password = $state('');
 	let confirmPassword = $state('');
 	let error = $state('');
@@ -26,14 +27,14 @@
 		}
 
 		try {
-			console.log('Attempting registration with:', { email });
+			console.log('Attempting registration with:', { email, name });
 
 			const response = await fetch('/api/register', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ email, password })
+				body: JSON.stringify({ email, password, name })
 			});
 
 			const data: RegisterResponse = await response.json();
@@ -62,6 +63,17 @@
 
 <form class="rounded-box border border-base-300 p-3" on:submit|preventDefault={handleRegister}>
 	<div class="form-control">
+		<input
+			bind:value={name}
+			type="text"
+			placeholder="Enter your name"
+			class="input input-bordered"
+			required
+			autocomplete="name"
+		/>
+	</div>
+
+	<div class="form-control mt-3">
 		<input
 			bind:value={email}
 			type="email"

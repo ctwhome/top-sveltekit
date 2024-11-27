@@ -14,7 +14,7 @@ interface UserRecord {
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { email, password } = await request.json();
+  const { email, password, name } = await request.json();
 
   if (!email || !password) {
     return json({ error: 'Email and password are required' }, { status: 400 });
@@ -51,9 +51,10 @@ export const POST: RequestHandler = async ({ request }) => {
       `CREATE users CONTENT {
         email: $email,
         password: $hashedPassword,
+        name: $name,
         provider: "email"
       } RETURN *`,
-      { email, hashedPassword }
+      { email, hashedPassword, name }
     );
 
     const newUser = createResult[0]?.[0];
