@@ -68,6 +68,7 @@
 					placeholder="Enter your email"
 					class="input input-bordered"
 					required
+					autocomplete="email"
 				/>
 			</div>
 
@@ -78,6 +79,7 @@
 					placeholder="Enter your password"
 					class="input input-bordered"
 					required
+					autocomplete="current-password"
 				/>
 			</div>
 
@@ -122,6 +124,7 @@
 					placeholder="Enter your email"
 					class="input input-bordered"
 					required
+					autocomplete="email"
 				/>
 			</div>
 

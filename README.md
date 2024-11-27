@@ -46,3 +46,13 @@ Build the application for production:
 pnpm build
 ```
 
+
+
+# Authentication
+In the DB
+
+When using JWT authentication with SurrealDB, we actually don't need the account and session tables since the authentication is handled through JWT tokens. The user table is sufficient since:
+
+JWT tokens handle the session management
+OAuth provider information can be stored in the user table
+The token verification is handled by SurrealDB's JWT access definition

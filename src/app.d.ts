@@ -1,10 +1,11 @@
 // See https://kit.svelte.dev/docs/types#app
-import type { DefaultSession, Session } from '@auth/core/types';
+import type { Session } from "@auth/core/types";
 
 declare global {
 	namespace App {
+		// interface Error {}
 		interface Locals {
-			auth: Session | null;
+			session: Session | null;
 		}
 		interface PageData {
 			session: Session | null;
@@ -14,13 +15,30 @@ declare global {
 }
 
 declare module '@auth/core/types' {
-	interface Session extends DefaultSession {
+	interface Session {
 		user: {
 			id: string;
-			email: string;
 			name?: string | null;
+			email?: string | null;
 			image?: string | null;
-		} & DefaultSession['user'];
+			admin?: boolean;
+		};
+		expires: string;
+	}
+}
+
+declare module '@auth/core/jwt' {
+	interface JWT {
+		id: string;
+		email?: string | null;
+		name?: string | null;
+		picture?: string | null;
+		sub?: string;
+		admin?: boolean;
+		provider?: string;
+		iat?: number;
+		exp?: number;
+		jti?: string;
 	}
 }
 

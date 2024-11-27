@@ -6,33 +6,42 @@
 	import { getDb } from '$lib/db/surreal';
 	let count = getCounter();
 
-	onMount(async () => {
+	onMount(() => {
 		console.log('🎹 mounted');
 		let queryUuid: Uuid | undefined;
 		let db: Surreal | undefined;
 
-		try {
-			db = await getDb();
-			queryUuid = await db.live('test', (action, result) => {
-				console.log('🎹 action:', action);
-				console.log('🎹 result:', result);
-				switch (action) {
-					case 'CREATE':
-					case 'UPDATE':
-					case 'DELETE':
-						break;
-				}
-			});
-		} catch (err) {
-			console.error(
-				'Failed to create live query:',
-				err instanceof Error ? err.message : String(err)
-			);
+		async function setupLiveQuery() {
+			try {
+				db = await getDb();
+				queryUuid = await db.live('test', (action, result) => {
+					console.log('🎹 action:', action);
+					console.log('🎹 result:', result);
+					switch (action) {
+						case 'CREATE':
+						case 'UPDATE':
+						case 'DELETE':
+							break;
+					}
+				});
+			} catch (err) {
+				console.error(
+					'Failed to create live query:',
+					err instanceof Error ? err.message : String(err)
+				);
+			}
 		}
 
-		return async () => {
+		// Set up the live query
+		setupLiveQuery();
+
+		// Return a synchronous cleanup function
+		return () => {
 			if (db && queryUuid) {
-				await db.kill(queryUuid);
+				// Kill the live query when component unmounts
+				db.kill(queryUuid).catch((err) => {
+					console.error('Failed to kill live query:', err);
+				});
 			}
 		};
 	});

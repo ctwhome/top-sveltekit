@@ -1,197 +1,120 @@
-import { writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import type { Todo } from '$lib/models/todo';
-import { getDb, setupLiveQuery, killLiveQuery } from '$lib/db/surreal';
-import type { Uuid } from 'surrealdb';
+import { Surreal } from 'surrealdb';
 
-// Helper function to safely convert SurrealDB response to Todo type
-function toTodo(data: any): Todo | null {
-  if (!data || typeof data !== 'object') return null;
+type TodoResponse = { id: string } & Todo;
 
-  return {
-    id: data.id,
-    title: data.title || '',
-    completed: Boolean(data.completed),
-    created_at: data.created_at || new Date().toISOString()
-  };
-}
+type LiveQueryAction = 'CREATE' | 'UPDATE' | 'DELETE' | 'CLOSE';
+type LiveQueryResult<T> = T | 'killed' | 'disconnected';
 
 function createTodoStore() {
   const { subscribe, set, update } = writable<Todo[]>([]);
-  let isInitialized = false;
-  let currentLiveQuery: Uuid | null = null;
-  console.log('🎹 hol');
+  let db: Surreal | null = null;
+  let liveQuery: any = null;
 
+  // Derived store for sorted todos
+  const sortedTodos = derived({ subscribe }, ($todos) => {
+    return [...$todos].sort((a, b) => {
+      const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return dateB - dateA;
+    });
+  });
 
-  async function ensureConnection() {
-    if (!isInitialized) {
+  // Store actions
+  const actions = {
+    subscribe: sortedTodos.subscribe,
+
+    async init() {
       try {
-        await getDb();
-        isInitialized = true;
+        // Connect to SurrealDB
+        db = new Surreal();
+        await db.connect('wss://surreal.ctwhome.com/rpc');
+
+        // Initial fetch
+        const result = await db.query<[{ result: TodoResponse[] }]>('SELECT * FROM todo ORDER BY created_at DESC');
+        if (result?.[0]?.result) {
+          set(result[0].result);
+        }
+
+        // Setup live query
+        liveQuery = await db.live<TodoResponse>('todo', (action: LiveQueryAction, result: LiveQueryResult<TodoResponse>) => {
+          if (action === 'CREATE' && typeof result !== 'string') {
+            update(todos => [...todos, result]);
+          } else if (action === 'UPDATE' && typeof result !== 'string') {
+            update(todos => todos.map(t => t.id === result.id ? result : t));
+          } else if (action === 'DELETE' && typeof result !== 'string') {
+            update(todos => todos.filter(t => t.id !== result.id));
+          }
+        });
       } catch (error) {
-        console.error('Failed to initialize database connection:', error);
+        console.error('Error initializing todo store:', error);
+      }
+    },
+
+    destroy() {
+      if (liveQuery && db) {
+        db.kill(liveQuery).catch(console.error);
+        liveQuery = null;
+      }
+      if (db) {
+        db.close().catch(console.error);
+        db = null;
+      }
+    },
+
+    async addTodo(title: string) {
+      try {
+        if (!db) throw new Error('Database not initialized');
+        if (!title.trim()) throw new Error('Title cannot be empty');
+
+        const result = await db.query<[{ result: TodoResponse[] }]>(
+          'CREATE todo CONTENT { title: $title, completed: false, created_at: time::now() }',
+          { title: title.trim() }
+        );
+
+        if (!result?.[0]?.result?.[0]) {
+          throw new Error('Failed to create todo');
+        }
+      } catch (error) {
+        console.error('Error creating todo:', error);
+        throw error;
+      }
+    },
+
+    async toggleTodo(id: string) {
+      try {
+        if (!db) throw new Error('Database not initialized');
+        if (!id) throw new Error('Todo ID is required');
+
+        const result = await db.query<[{ result: TodoResponse[] }]>(
+          'UPDATE $id SET completed = function() { return !this.completed }',
+          { id }
+        );
+
+        if (!result?.[0]?.result?.[0]) {
+          throw new Error('Failed to toggle todo');
+        }
+      } catch (error) {
+        console.error('Error toggling todo:', error);
+        throw error;
+      }
+    },
+
+    async deleteTodo(id: string) {
+      try {
+        if (!db) throw new Error('Database not initialized');
+        if (!id) throw new Error('Todo ID is required');
+
+        await db.query('DELETE $id', { id });
+      } catch (error) {
+        console.error('Error deleting todo:', error);
         throw error;
       }
     }
-  }
-
-  async function setupRealtimeUpdates() {
-    // Only set up live query if it doesn't exist
-    if (currentLiveQuery) {
-      console.log('Live query already exists, skipping setup');
-      return;
-    }
-
-    try {
-      // Set up new live query
-      currentLiveQuery = await setupLiveQuery('todos', async (action, result) => {
-        console.log('Live query update:', action, result);
-
-        switch (action) {
-          case 'CREATE': {
-            const newTodo = toTodo(result);
-            if (newTodo) {
-              update(todos => {
-                const newTodos = [...todos, newTodo];
-                return newTodos.sort((a, b) => {
-                  const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
-                  const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
-                  return dateB - dateA;
-                });
-              });
-            }
-            break;
-          }
-          case 'UPDATE': {
-            const updatedTodo = toTodo(result);
-            if (updatedTodo) {
-              update(todos => todos.map(t => t.id === updatedTodo.id ? updatedTodo : t));
-            }
-            break;
-          }
-          case 'DELETE': {
-            // Handle both possible delete result formats
-            const deletedId = typeof result === 'string' ? result : result?.id;
-            if (deletedId) {
-              update(todos => {
-                console.log('Removing todo with id:', deletedId);
-                return todos.filter(t => t.id !== deletedId);
-              });
-            }
-            break;
-          }
-          case 'CLOSE': {
-            currentLiveQuery = null;
-            break;
-          }
-        }
-      });
-    } catch (error) {
-      console.error('Error setting up realtime updates:', error);
-    }
-  }
-
-  async function fetchAllTodos() {
-    try {
-      const dbInstance = await getDb();
-      const result = await dbInstance.query('SELECT * FROM todos ORDER BY created_at DESC');
-      if (!Array.isArray(result) || result.length === 0) {
-        set([]);
-        return [];
-      }
-
-      const todos = Array.isArray(result[0])
-        ? result[0].map((t: any) => toTodo(t)).filter((t): t is Todo => t !== null)
-        : [];
-      set(todos);
-      return todos;
-    } catch (error) {
-      console.error('Error fetching todos:', error);
-      return [];
-    }
-  }
-
-  return {
-    subscribe,
-
-    // Initialize store with realtime updates
-    async init() {
-      await ensureConnection();
-      await fetchAllTodos();
-      // await setupRealtimeUpdates();
-    },
-
-    // Cleanup function
-    async destroy() {
-      if (currentLiveQuery) {
-        await killLiveQuery(currentLiveQuery);
-        currentLiveQuery = null;
-      }
-    },
-
-    // Create a new todo
-    async create(title: string) {
-      try {
-        await ensureConnection();
-        const dbInstance = await getDb();
-
-        const result = await dbInstance.query('CREATE todos SET title = $title, completed = false, created_at = $created_at', {
-          title,
-          created_at: new Date().toISOString()
-        });
-
-        if (!Array.isArray(result) || result.length === 0 || !Array.isArray(result[0])) return null;
-
-        const created = toTodo(result[0][0]);
-        return created || null;
-      } catch (error) {
-        console.error('Error creating todo:', error);
-        return null;
-      }
-    },
-
-    // Toggle todo completion
-    async toggle(id: string) {
-      try {
-        await ensureConnection();
-        const dbInstance = await getDb();
-
-        // First get the current todo to check its completed status
-        const currentResult = await dbInstance.query('SELECT * FROM todos WHERE id = $id', { id });
-        if (!Array.isArray(currentResult) || currentResult.length === 0 || !Array.isArray(currentResult[0])) return null;
-
-        const currentTodo = toTodo(currentResult[0][0]);
-        if (!currentTodo) return null;
-
-        // Then update with the opposite completed status
-        const result = await dbInstance.query('UPDATE todos SET completed = $completed WHERE id = $id', {
-          id,
-          completed: !currentTodo.completed
-        });
-
-        if (!Array.isArray(result) || result.length === 0 || !Array.isArray(result[0])) return null;
-
-        const updated = toTodo(result[0][0]);
-        return updated || null;
-      } catch (error) {
-        console.error('Error toggling todo:', error);
-        return null;
-      }
-    },
-
-    // Delete a todo
-    async delete(id: string) {
-      try {
-        await ensureConnection();
-        const dbInstance = await getDb();
-
-        const result = await dbInstance.query('DELETE todos WHERE id = $id RETURN id', { id });
-        return Array.isArray(result) && result.length > 0;
-      } catch (error) {
-        console.error('Error deleting todo:', error);
-        return false;
-      }
-    }
   };
+
+  return actions;
 }
 
-export const todoStore = createTodoStore();
+export const todos = createTodoStore();
