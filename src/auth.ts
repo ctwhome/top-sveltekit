@@ -7,9 +7,12 @@ import { env } from "$env/dynamic/private";
 interface UserRecord {
   id: string;
   email: string;
-  password: string;
+  password?: string;  // Made optional to match schema
   name?: string;
   image?: string | null;
+  provider?: string;
+  provider_id?: string;
+  last_login?: string;
 }
 
 export const auth = SvelteKitAuth({
@@ -52,12 +55,18 @@ export const auth = SvelteKitAuth({
             return null;
           }
 
+          // Update last login
+          await db.query(
+            'UPDATE user SET last_login = time::now() WHERE id = $id',
+            { id: user.id }
+          );
+
           // Return user object in the exact format Auth.js expects
           return {
             id: user.id,
             email: user.email,
             name: user.name || user.email.split('@')[0],
-            image: null
+            image: user.image || null
           };
         } catch (error) {
           console.error('Login error:', error);
@@ -83,19 +92,73 @@ export const auth = SvelteKitAuth({
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account }) {
+      if (account?.provider === 'google') {
+        try {
+          const db = await import('$lib/db/surreal').then(m => m.getDb());
+
+          // Check if user exists
+          const result = await db.query<[UserRecord[]]>(
+            'SELECT * FROM user WHERE email = $email LIMIT 1',
+            { email: user.email }
+          );
+
+          const existingUser = result[0]?.[0];
+
+          if (existingUser) {
+            // Update existing user
+            await db.query(
+              'UPDATE user SET name = $name, image = $image, provider = $provider, provider_id = $provider_id, last_login = time::now() WHERE id = $id',
+              {
+                id: existingUser.id,
+                name: user.name,
+                image: user.image,
+                provider: 'google',
+                provider_id: user.id
+              }
+            );
+          } else {
+            // Create new user without password field
+            await db.query(
+              'CREATE user CONTENT { email: $email, name: $name, image: $image, provider: $provider, provider_id: $provider_id, last_login: time::now() }',
+              {
+                email: user.email,
+                name: user.name,
+                image: user.image,
+                provider: 'google',
+                provider_id: user.id
+              }
+            );
+          }
+          return true;
+        } catch (error) {
+          console.error('Error saving Google user:', error);
+          return false;
+        }
+      }
+      return true;
+    },
+
+    async jwt({ token, user, account }) {
       if (user) {
         token.sub = user.id;
         token.email = user.email;
         token.name = user.name;
+        token.picture = user.image;
+        if (account) {
+          token.provider = account.provider;
+          token.provider_id = account.providerAccountId;
+        }
       }
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub ?? '';
         session.user.email = token.email ?? '';
         session.user.name = token.name ?? '';
+        session.user.image = token.picture ?? null;
       }
       return session;
     }

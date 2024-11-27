@@ -29,7 +29,7 @@ DEFINE FIELD email ON user TYPE string
     PERMISSIONS
     FOR select FULL;  -- Allow email field to be queried
 
-DEFINE FIELD password ON user TYPE string
+DEFINE FIELD password ON user TYPE option<string>  -- Made password optional
     PERMISSIONS
     FOR select FULL;  -- Allow password access during login
 
@@ -42,6 +42,9 @@ DEFINE FIELD provider ON user TYPE string
     DEFAULT 'email';
 
 DEFINE FIELD provider_id ON user TYPE option<string>;
+
+DEFINE FIELD last_login ON user TYPE datetime
+    DEFAULT time::now();
 
 -- ------------------------------
 -- INDEX DEFINITIONS
