@@ -1,16 +1,26 @@
 import { writable, derived } from 'svelte/store';
 import type { Todo } from '$lib/models/todo';
 import { Surreal } from 'surrealdb';
+import type { LiveHandler, Patch } from 'surrealdb';
 
 type TodoResponse = { id: string } & Todo;
 
-type LiveQueryAction = 'CREATE' | 'UPDATE' | 'DELETE' | 'CLOSE';
-type LiveQueryResult<T> = T | 'killed' | 'disconnected';
+interface QueryResult {
+  status: string;
+  time: string;
+  result: TodoResponse[];
+}
+
+type LiveQueryData = {
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'CLOSE';
+  result: TodoResponse | 'killed' | 'disconnected';
+};
 
 function createTodoStore() {
   const { subscribe, set, update } = writable<Todo[]>([]);
   let db: Surreal | null = null;
   let liveQuery: any = null;
+  let currentUserId: string | null = null;
 
   // Derived store for sorted todos
   const sortedTodos = derived({ subscribe }, ($todos) => {
@@ -25,30 +35,41 @@ function createTodoStore() {
   const actions = {
     subscribe: sortedTodos.subscribe,
 
-    async init() {
+    async init(userId: string) {
       try {
+        currentUserId = userId;
+
         // Connect to SurrealDB
         db = new Surreal();
         await db.connect('wss://surreal.ctwhome.com/rpc');
 
-        // Initial fetch
-        const result = await db.query<[{ result: TodoResponse[] }]>('SELECT * FROM todo ORDER BY created_at DESC');
+        // Use the namespace and database
+        await db.use({ namespace: 'ctw', database: 'topsveltekit' });
+
+        // Initial fetch - only get todos for the current user
+        const result = await db.query<[QueryResult]>(
+          'SELECT * FROM todos WHERE user = $userId ORDER BY created_at DESC',
+          { userId }
+        );
+
         if (result?.[0]?.result) {
           set(result[0].result);
         }
 
-        // Setup live query
-        liveQuery = await db.live<TodoResponse>('todo', (action: LiveQueryAction, result: LiveQueryResult<TodoResponse>) => {
+        // Setup live query for user's todos
+        const query = `SELECT * FROM todos WHERE user = "${userId}"`;
+        liveQuery = await db.live(query, (action, result) => {
           if (action === 'CREATE' && typeof result !== 'string') {
-            update(todos => [...todos, result]);
+            update(todos => [...todos, result as TodoResponse]);
           } else if (action === 'UPDATE' && typeof result !== 'string') {
-            update(todos => todos.map(t => t.id === result.id ? result : t));
+            update(todos => todos.map(t => t.id === (result as TodoResponse).id ? (result as TodoResponse) : t));
           } else if (action === 'DELETE' && typeof result !== 'string') {
-            update(todos => todos.filter(t => t.id !== result.id));
+            update(todos => todos.filter(t => t.id !== (result as TodoResponse).id));
           }
         });
       } catch (error) {
         console.error('Error initializing todo store:', error);
+        throw error;
       }
     },
 
@@ -61,16 +82,18 @@ function createTodoStore() {
         db.close().catch(console.error);
         db = null;
       }
+      currentUserId = null;
     },
 
     async addTodo(title: string) {
       try {
         if (!db) throw new Error('Database not initialized');
+        if (!currentUserId) throw new Error('User not authenticated');
         if (!title.trim()) throw new Error('Title cannot be empty');
 
-        const result = await db.query<[{ result: TodoResponse[] }]>(
-          'CREATE todo CONTENT { title: $title, completed: false, created_at: time::now() }',
-          { title: title.trim() }
+        const result = await db.query<[QueryResult]>(
+          'CREATE todos CONTENT { title: $title, completed: false, created_at: time::now(), user: $userId }',
+          { title: title.trim(), userId: currentUserId }
         );
 
         if (!result?.[0]?.result?.[0]) {
@@ -85,14 +108,26 @@ function createTodoStore() {
     async toggleTodo(id: string) {
       try {
         if (!db) throw new Error('Database not initialized');
+        if (!currentUserId) throw new Error('User not authenticated');
         if (!id) throw new Error('Todo ID is required');
 
-        const result = await db.query<[{ result: TodoResponse[] }]>(
-          'UPDATE $id SET completed = function() { return !this.completed }',
-          { id }
+        // First get the current todo
+        const result = await db.query<[QueryResult]>(
+          'SELECT * FROM $id WHERE user = $userId',
+          { id, userId: currentUserId }
         );
 
         if (!result?.[0]?.result?.[0]) {
+          throw new Error('Todo not found or unauthorized');
+        }
+
+        // Update the todo
+        const updateResult = await db.query<[QueryResult]>(
+          'UPDATE $id SET completed = function() { return !this.completed } WHERE user = $userId',
+          { id, userId: currentUserId }
+        );
+
+        if (!updateResult?.[0]?.result?.[0]) {
           throw new Error('Failed to toggle todo');
         }
       } catch (error) {
@@ -104,9 +139,28 @@ function createTodoStore() {
     async deleteTodo(id: string) {
       try {
         if (!db) throw new Error('Database not initialized');
+        if (!currentUserId) throw new Error('User not authenticated');
         if (!id) throw new Error('Todo ID is required');
 
-        await db.query('DELETE $id', { id });
+        // First verify the todo belongs to the user
+        const result = await db.query<[QueryResult]>(
+          'SELECT * FROM $id WHERE user = $userId',
+          { id, userId: currentUserId }
+        );
+
+        if (!result?.[0]?.result?.[0]) {
+          throw new Error('Todo not found or unauthorized');
+        }
+
+        // Delete the todo
+        const deleteResult = await db.query<[QueryResult]>(
+          'DELETE $id WHERE user = $userId',
+          { id, userId: currentUserId }
+        );
+
+        if (!deleteResult?.[0]?.result?.[0]) {
+          throw new Error('Failed to delete todo');
+        }
       } catch (error) {
         console.error('Error deleting todo:', error);
         throw error;
