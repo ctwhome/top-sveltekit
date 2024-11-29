@@ -7,10 +7,12 @@
 	let users: User[] = [];
 
 	onMount(async () => {
-		// Custom query
-		// Custom query
-		users = await SurrealDBClient.query<User>('SELECT * FROM test');
-		console.log('Admin page');
+		try {
+			users = await SurrealDBClient.query<User>('SELECT * FROM test');
+			console.log('Admin page loaded users:', users);
+		} catch (error) {
+			console.error('Failed to load users:', error);
+		}
 	});
 </script>
 

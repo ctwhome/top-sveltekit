@@ -18,8 +18,16 @@ interface SurrealResponse<T> {
   result: T[];
 }
 
+interface SignInResponse {
+  code: number;
+  details: string;
+  token: string;
+  status: string;
+}
+
 export class SurrealDBClient {
   private static db: Surreal | null = null;
+  private static token: string | null = null;
 
   // WebSocket Methods
   static async initWebSocket() {
@@ -27,8 +35,45 @@ export class SurrealDBClient {
       this.db = new Surreal();
       await this.db.connect(WS_URL);
       await this.db.use({ namespace: SURREAL_NS, database: SURREAL_DB });
+      if (this.token) {
+        await this.db.authenticate(this.token);
+      }
     }
     return this.db;
+  }
+
+  static async signIn(email: string, password: string): Promise<{ token: string; user: any }> {
+    const headers = new Headers({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+
+    const response = await fetch(`${REST_URL}/signin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        namespace: SURREAL_NS,
+        database: SURREAL_DB,
+        scope: 'user',
+        email,
+        password
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to sign in: ${response.statusText}. ${errorText}`);
+    }
+
+    const result = await response.json() as SignInResponse;
+    this.token = result.token;
+
+    // Get user details
+    const db = await this.initWebSocket();
+    const userResult = await db.query<[any]>('SELECT * FROM users WHERE email = $email LIMIT 1', { email });
+    const user = userResult[0]?.[0];
+
+    return { token: result.token, user };
   }
 
   static async query<T>(query: string, vars: Record<string, any> = {}): Promise<T[]> {
@@ -57,9 +102,13 @@ export class SurrealDBClient {
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
 
-    const session = get(page).data.session as Session | null;
-    if (session?.user) {
-      headers.set('Authorization', `Bearer ${session.user.id}`);
+    if (this.token) {
+      headers.set('Authorization', `Bearer ${this.token}`);
+    } else {
+      const session = get(page).data.session as Session | null;
+      if (session?.user) {
+        headers.set('Authorization', `Bearer ${session.user.id}`);
+      }
     }
 
     headers.set('surreal-ns', SURREAL_NS);
@@ -139,63 +188,7 @@ export class SurrealDBClient {
     if (this.db) {
       await this.db.close();
       this.db = null;
+      this.token = null;
     }
   }
 }
-
-// Example usage in a store:
-/*
-import { writable } from 'svelte/store';
-import { SurrealDBClient } from '$lib/db/surrealdb-api';
-
-interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-}
-
-export const todos = writable<Todo[]>([]);
-
-export const todoStore = {
-  async loadTodos() {
-    try {
-      const result = await SurrealDBClient.select<Todo>('todos');
-      todos.set(result);
-    } catch (error) {
-      console.error('Failed to load todos:', error);
-    }
-  },
-
-  async addTodo(title: string) {
-    try {
-      const todo = await SurrealDBClient.create<Todo>('todos', {
-        title,
-        completed: false
-      });
-      todos.update(current => [...current, todo]);
-    } catch (error) {
-      console.error('Failed to add todo:', error);
-    }
-  },
-
-  async toggleTodo(id: string, completed: boolean) {
-    try {
-      const updated = await SurrealDBClient.update<Todo>('todos', id, { completed });
-      todos.update(current =>
-        current.map(todo => todo.id === id ? updated : todo)
-      );
-    } catch (error) {
-      console.error('Failed to toggle todo:', error);
-    }
-  },
-
-  async deleteTodo(id: string) {
-    try {
-      await SurrealDBClient.delete('todos', id);
-      todos.update(current => current.filter(todo => todo.id !== id));
-    } catch (error) {
-      console.error('Failed to delete todo:', error);
-    }
-  }
-};
-*/

@@ -10,6 +10,13 @@ type DbConfig = {
   token?: string;
 };
 
+interface SignInResponse {
+  code: number;
+  details: string;
+  token: string;
+  status: string;
+}
+
 const DEFAULT_CONFIG: DbConfig = {
   url: env.SURREAL_URL,
   namespace: env.SURREAL_NS,
@@ -45,6 +52,7 @@ const connectToDatabase = async (config: DbConfig): Promise<Surreal> => {
       await newDb.signin({
         username: config.username,
         password: config.password,
+        scope: 'root',
         NS: config.namespace,
         DB: config.database
       });
@@ -82,6 +90,42 @@ export const getDb = async (config: DbConfig = DEFAULT_CONFIG): Promise<Surreal>
     db = null;
     throw error;
   }
+};
+
+// User authentication function
+export const authenticateUser = async (email: string, password: string): Promise<{ token: string; user: any }> => {
+  const response = await fetch(`${DEFAULT_CONFIG.url.replace('/rpc', '')}/signin`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      namespace: DEFAULT_CONFIG.namespace,
+      database: DEFAULT_CONFIG.database,
+      scope: 'user',
+      email,
+      password
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to sign in: ${response.statusText}. ${errorText}`);
+  }
+
+  const result = await response.json() as SignInResponse;
+
+  // Get user details using the token
+  const userDb = await connectWithToken(result.token);
+  const userResult = await userDb.query<[any]>('SELECT * FROM users WHERE email = $email LIMIT 1', { email });
+  const user = userResult[0]?.[0];
+
+  if (!user) {
+    throw new Error('User not found after authentication');
+  }
+
+  return { token: result.token, user };
 };
 
 // Create a frontend-specific connection function

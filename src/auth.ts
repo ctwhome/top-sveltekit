@@ -1,13 +1,13 @@
 import { SvelteKitAuth } from "@auth/sveltekit";
 import Google from "@auth/sveltekit/providers/google";
 import Credentials from "@auth/sveltekit/providers/credentials";
-import bcrypt from 'bcrypt';
 import { env } from "$env/dynamic/private";
+import { authenticateUser, getDb } from "$lib/db/surreal";
 
 interface UserRecord {
   id: string;
   email: string;
-  password?: string;  // Made optional to match schema
+  password?: string;
   name?: string;
   image?: string | null;
   provider?: string;
@@ -23,47 +23,29 @@ export const auth = SvelteKitAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials): Promise<{ id: string; email: string; name?: string; image?: string | null; } | null> {
-        if (!credentials?.email || !credentials?.password) {
-          console.log('Missing credentials');
+      async authorize(credentials, request) {
+        const email = credentials?.email;
+        const password = credentials?.password;
+
+        if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
+          console.log('Missing or invalid credentials');
           return null;
         }
 
         try {
-          const db = await import('$lib/db/surreal').then(m => m.getDb());
-          console.log('Attempting login for email:', credentials.email);
+          console.log('Attempting login for email:', email);
 
-          // Query to get user with password
-          const result = await db.query<[UserRecord[]]>(
-            'SELECT * FROM users WHERE email = $email LIMIT 1',
-            { email: credentials.email }
-          );
+          // Use SurrealDB's native signin through our authenticateUser function
+          const { token, user } = await authenticateUser(email, password);
 
-          const user = result[0]?.[0];
-          console.log('Found user:', user ? 'yes' : 'no');
-
-          if (!user?.password) {
-            console.log('No user found or no password');
+          if (!user) {
+            console.log('No user found');
             return null;
           }
-
-          // Verify password
-          const isValid = await bcrypt.compare(credentials.password.toString(), user.password);
-          console.log('Password valid:', isValid);
-
-          if (!isValid) {
-            return null;
-          }
-
-          // Update last login
-          await db.query(
-            'UPDATE users SET last_login = time::now() WHERE id = $id',
-            { id: user.id }
-          );
 
           // Return user object in the exact format Auth.js expects
           return {
-            id: user.id,
+            id: token, // Use the token as the ID since we'll use it for authentication
             email: user.email,
             name: user.name || user.email.split('@')[0],
             image: user.image || null
@@ -95,7 +77,7 @@ export const auth = SvelteKitAuth({
     async signIn({ user, account }) {
       if (account?.provider === 'google') {
         try {
-          const db = await import('$lib/db/surreal').then(m => m.getDb());
+          const db = await getDb();
 
           // Check if user exists
           const result = await db.query<[UserRecord[]]>(
@@ -141,7 +123,7 @@ export const auth = SvelteKitAuth({
 
     async jwt({ token, user, account }) {
       if (user) {
-        token.sub = user.id;
+        token.sub = user.id; // This will now be the SurrealDB JWT token
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
@@ -155,7 +137,7 @@ export const auth = SvelteKitAuth({
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub ?? '';
+        session.user.id = token.sub ?? ''; // This will be the SurrealDB JWT token
         session.user.email = token.email ?? '';
         session.user.name = token.name ?? '';
         session.user.image = token.picture ?? null;
