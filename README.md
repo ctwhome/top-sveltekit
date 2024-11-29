@@ -5,22 +5,40 @@ by [ctwhome](https://ctwhome.com)
 
 ## Installation and running locally
 ```bash
-npx degit ctwhome/top-sveltekit <directory-name>
+bunx degit ctwhome/top-sveltekit <directory-name>
 ```
 
-Steps:
-1. Install the dependencies with `pnpm install`
-2. Generate the google OAUTH credentials for the auth.js adapter
+```
+bunx degit ctwhome/top-sveltekit newName --mode=git    # --mode-git if cloning a private repo
+```
 
-3. copy the .env.local.example file to .env.local
-4. fill in the .env.local file with your own values
-5. copy the .env.example file to .env
-6. run `npx auth secret` to generate a secret key for the auth.js adapter
+Libraries to install for auth:
+```
+bun add pg node-pg-migrate dotenv @auth/sveltekit @auth/pg-adapter
+```
+
+Running Migrations:
+```shell
+bun migrate up
+bun migrate down  # with number to run back as many
+```
+
+
+
+Steps:
+1. Install the dependencies with `bun install`
+2. Generate the google OAUTH credentials for the auth.js.
+3. ![alt text](./static/image.png)
+4. copy the .env.local.example file to .env.local
+5. fill in the .env.local file with your own values
+6. copy the .env.example file to .env
+7. run `npx auth secret` to generate a secret key for the auth.js adapter
+8. Run migrations files to setup the database `bun run migrate up`. It will create the neccesary tables and functions, users and two example users alice and bob.
 
 
 Run locally:
 ```bash
-pnpm dev
+bun dev
 ```
 
 ## Updating fork
@@ -35,7 +53,7 @@ git fetch upstream
 Start the development server on [http://localhost:5173](http://localhost:5173)
 
 ```bash
-pnpm dev
+bun dev
 ```
 
 ## Production
@@ -43,6 +61,6 @@ pnpm dev
 Build the application for production:
 
 ```bash
-pnpm build
+bun build
 ```
 

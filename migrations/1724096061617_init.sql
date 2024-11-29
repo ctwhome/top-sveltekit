@@ -64,7 +64,7 @@ CREATE UNIQUE INDEX users_email_idx ON users (email);
 -- Insert sample users
 INSERT INTO users (name, email, password, "emailVerified", image)
 VALUES ('Alice Doe', 'alice@ctwhome.com', '$2a$12$qZNxIFh/Yayqshdz.3ZH2Oy2uORW/MqDS9NlfkIZsm6xnK5ZtCyJG', '2023-10-10', 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'), -- admin
-       ('Chat Diamond', 'diamond@ctwhome.com', '$2a$12$qZNxIFh/Yayqshdz.3ZH2Oy2uORW/MqDS9NlfkIZsm6xnK5ZtCyJG', '2023-10-10', '/images/diamond.jpg'); -- admin
+       ('Bob Sponge', 'bob@ctwhome.com', '$2a$12$qZNxIFh/Yayqshdz.3ZH2Oy2uORW/MqDS9NlfkIZsm6xnK5ZtCyJG', '2023-10-10', '/images/diamond.jpg'); -- admin
 
 -- Grant permissions to the database user (replace 'appuser' with the actual username if different)
 GRANT SELECT, INSERT, UPDATE, DELETE ON users TO appuser;
