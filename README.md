@@ -1,6 +1,13 @@
 # Ctwhome top-sveltekit
-Unified template with SvelteKit (Svelte 5), TailwindCSS, DaisyUI, Auth, Postgres, and more.\
+Unified full-stack with SvelteKit (Svelte 5), TailwindCSS, DaisyUI, AuthJS, ElectricSQL Postgres, and more.\
 by [ctwhome](https://ctwhome.com)
+
+## Goal of the template 
+1. **Local-first architecture**: Data lives locally and syncs with the database seamlessly.
+
+2. **Simplicity in code**: Update Svelte stores locally and let syncing happen in the background.
+
+3. **Future scalability**: Add real-time sync, offline-first capabilities, and avoid duplicating effort with local storage or API requests.
 
 
 ## Installation and running locally
