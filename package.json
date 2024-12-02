@@ -90,6 +90,7 @@
 		"pg": "^8.13.1",
 		"quill": "^2.0.3",
 		"quill-markdown": "^1.5.0",
+		"quill-mention": "^6.0.2",
 		"quilljs-markdown": "^1.2.0",
 		"sortablejs": "^1.15.6",
 		"svelte-french-toast": "^1.2.0",
