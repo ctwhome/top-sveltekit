@@ -68,56 +68,41 @@ export class SlashCommandsModule {
   }
 
   private attachEventListeners() {
-    // Listen for text changes
-    this.quill.on('text-change', () => {
-      this.checkForSlashCommand();
-    });
-
-    // Listen for selection changes
-    this.quill.on('selection-change', (range) => {
-      if (!range) {
+    this.quill.on('text-change', (delta: any) => {
+      // Only handle single character insertions
+      if (delta.ops?.length !== 1 || !delta.ops[0]?.insert) {
         this.hideCommands();
-      } else {
-        this.checkForSlashCommand();
+        return;
+      }
+
+      // Check if we just typed a slash
+      if (delta.ops[0].insert === '/') {
+        const range = this.quill.getSelection();
+        if (!range) return;
+
+        // Get the previous character
+        const prevChar = range.index > 0 ? this.quill.getText(range.index - 1, 1) : '\n';
+
+        // Only show commands after space or newline
+        if (prevChar === ' ' || prevChar === '\n') {
+          this.showCommands();
+        }
       }
     });
 
-    // Close commands when clicking outside
+    // Hide commands on selection change
+    this.quill.on('selection-change', (range) => {
+      if (!range) {
+        this.hideCommands();
+      }
+    });
+
+    // Hide commands when clicking outside
     document.addEventListener('click', (e) => {
       if (this.container && !this.container.contains(e.target as Node) && !this.quill.container.contains(e.target as Node)) {
         this.hideCommands();
       }
     });
-  }
-
-  private checkForSlashCommand() {
-    const range = this.quill.getSelection();
-    if (!range) return;
-
-    const [line] = this.quill.getLine(range.index);
-    if (!line) return;
-
-    // Get the text content of the line
-    const lineText = line.domNode?.textContent || '';
-
-    // Get the position of the cursor relative to the start of the line
-    const cursorPosition = range.index - line.offset();
-
-    // Get all text before the cursor in the current line
-    const textBeforeCursor = lineText.slice(0, cursorPosition);
-
-    // Check if we just typed a slash
-    const lastChar = textBeforeCursor.slice(-1);
-
-    // Check if we're at the start of a line or after whitespace
-    const isStartOfLine = textBeforeCursor.length === 1;
-    const isPrecededByWhitespace = textBeforeCursor.length > 1 && /\s/.test(textBeforeCursor.slice(-2, -1));
-
-    if (lastChar === '/' && (isStartOfLine || isPrecededByWhitespace)) {
-      this.showCommands();
-    } else {
-      this.hideCommands();
-    }
   }
 
   private showCommands() {
@@ -173,10 +158,7 @@ export class SlashCommandsModule {
         // Delete the slash character
         const range = this.quill.getSelection();
         if (range) {
-          const [line] = this.quill.getLine(range.index);
-          if (line) {
-            this.quill.deleteText(range.index - 1, 1);
-          }
+          this.quill.deleteText(range.index - 1, 1);
         }
 
         // Execute the command
