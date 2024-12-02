@@ -5,6 +5,7 @@
 	import { toolbarOptions } from './quillToolbarConfig';
 	import { createKeyboardBindings } from './quillKeyboardBindings';
 	import { markdownConfig } from './quillMarkdownConfig';
+	import { SlashCommandsModule } from './quillSlashCommands';
 
 	let editorElement: HTMLElement;
 	let quill: any;
@@ -24,11 +25,14 @@
 					}
 				},
 				placeholder:
-					'Start writing...\n\nTry markdown syntax:\n# Heading 1\n## Heading 2\n* Bullet point\n1. Numbered list\n> Blockquote\n```code block```\n**bold text**\n*italic text*'
+					'Start writing...\n\nTry markdown syntax:\n# Heading 1\n## Heading 2\n* Bullet point\n1. Numbered list\n> Blockquote\n```code block```\n**bold text**\n*italic text*\n\nOr type / to use slash commands'
 			});
 
 			// Initialize QuillMarkdown
 			new MarkdownShortcuts(quill, markdownConfig);
+
+			// Initialize SlashCommands
+			new SlashCommandsModule(quill);
 		}
 	});
 </script>
@@ -76,5 +80,9 @@
 
 	:global(.ql-snow .ql-tooltip input[type='text']) {
 		@apply border-base-300 bg-base-200 text-current;
+	}
+
+	:global(.slash-commands-container) {
+		z-index: 1000;
 	}
 </style>
