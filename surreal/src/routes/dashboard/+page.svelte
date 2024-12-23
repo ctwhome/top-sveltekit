@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { signOut } from '@auth/sveltekit/client';
-	import { LogOutIcon, Plus, Database, Trash2 } from 'lucide-svelte';
+	import { LogOutIcon, PlusIcon, DatabaseIcon, Trash2Icon } from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
 	import { dbStatus, create } from '$lib/stores/db';
@@ -11,6 +11,7 @@
 	let newItemText = '';
 	let cleanup: (() => void) | undefined;
 	let showToken = false;
+	let jwtToken: string | null = null;
 
 	async function handleSignOut() {
 		await signOut({ callbackUrl: '/login' });
@@ -47,6 +48,17 @@
 	function formatDate(timestamp: number) {
 		return new Date(timestamp * 1000).toLocaleString();
 	}
+
+	// Get JWT token from session cookie
+	onMount(() => {
+		const cookies = document.cookie.split(';');
+		const authCookie = cookies.find((cookie) =>
+			cookie.trim().startsWith('next-auth.session-token=')
+		);
+		if (authCookie) {
+			jwtToken = authCookie.split('=')[1].trim();
+		}
+	});
 
 	onDestroy(() => {
 		if (cleanup) {
@@ -87,7 +99,7 @@
 							on:keydown={(e) => e.key === 'Enter' && addItem()}
 						/>
 						<button class="btn btn-primary" on:click={addItem}>
-							<Plus class="mr-2 h-4 w-4" />
+							<PlusIcon class="mr-2 h-4 w-4" />
 							Add Item
 						</button>
 					</div>
@@ -97,12 +109,12 @@
 					<div class="card-body">
 						{#if $dbStatus === 'connected'}
 							<div class="badge badge-success gap-2">
-								<Database class="h-4 w-4" />
+								<DatabaseIcon class="h-4 w-4" />
 								Connected
 							</div>
 						{:else}
 							<div class="badge badge-error gap-2">
-								<Database class="h-4 w-4" />
+								<DatabaseIcon class="h-4 w-4" />
 								{$dbStatus}
 							</div>
 						{/if}
@@ -120,7 +132,7 @@
 											on:click={() => deleteItem(item.id)}
 											title="Delete item"
 										>
-											<Trash2 class="h-4 w-4" />
+											<Trash2Icon class="h-4 w-4" />
 										</button>
 									</div>
 								</li>
@@ -169,7 +181,15 @@
 							</div>
 						</div>
 
-						<div class="mt-6">
+						{#if jwtToken}
+							<div class="mt-2">
+								<h4 class="text-md mb-2 font-semibold">Complete JWT Token</h4>
+								<div class="mockup-code bg-base-300 overflow-x-auto text-sm">
+									<pre data-prefix="~"><code>{jwtToken}</code></pre>
+								</div>
+							</div>
+						{/if}
+						<div class="mt-2">
 							<h4 class="text-md mb-2 font-semibold">Raw Token Data</h4>
 							<div class="mockup-code bg-base-300 text-sm">
 								<pre data-prefix="~"><code>{JSON.stringify(token.raw, null, 2)}</code></pre>

@@ -54,7 +54,9 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
       }
       return token;
     },
+
     async session({ session, token }) {
+
       if (token) {
         if (session.user) {
           session.user.email = token.email as string;

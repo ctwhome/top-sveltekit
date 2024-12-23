@@ -2,8 +2,8 @@
 	import { signIn } from '@auth/sveltekit/client';
 	import { AlertCircle, LogIn } from 'lucide-svelte';
 
-	let email = '';
-	let password = '';
+	let email = 'test@example.com';
+	let password = 'password';
 	let loading = false;
 	let error: string | null = null;
 
