@@ -2,9 +2,10 @@
 
 This is a SvelteKit template for SurrealDB.
 
-- [ ] Auth
+- [ ] Auth (partial, only working locally, not involoving the database).
 - [ ] CRUD Todos
 - [ ] CRUD Users
+- [x] Surreal DB with persistance and docker compose
 - [ ] Localdev and Production
 - [ ] Coolify Deploy
 
