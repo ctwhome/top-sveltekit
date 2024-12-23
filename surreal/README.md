@@ -11,7 +11,9 @@ This is a SvelteKit template for SurrealDB.
 ## Setup
 
 ```bash
-npm install
+bun install
+bun dev
+bun db:init # run to apply the schema to the database
 ```
 
 ## Development
