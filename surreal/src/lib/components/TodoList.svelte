@@ -17,7 +17,6 @@
 	let newItemText = '';
 	let cleanup: (() => void) | undefined;
 	let todoList: HTMLElement;
-	let isUpdatingPositions = false;
 
 	onMount(() => {
 		if (todoList) {
@@ -26,51 +25,40 @@
 				handle: '.handle',
 				ghostClass: 'opacity-50',
 				onStart: () => {
-					console.log('Starting drag with items:', JSON.stringify($todos, null, 2));
+					// console.log('Starting drag with items:', JSON.stringify($todos, null, 2));
 				},
 				onEnd: async (evt) => {
 					const { oldIndex, newIndex } = evt;
-					console.log('Drag ended:', { oldIndex, newIndex });
+					// console.log('Drag ended:', { oldIndex, newIndex });
 
+					// Validate indices
 					if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) {
 						console.log('Invalid drag operation - indices:', { oldIndex, newIndex });
 						return;
 					}
 
-					if (isUpdatingPositions) {
-						console.log('Already updating positions, skipping');
+					const items = [...$todos];
+
+					// Validate array bounds
+					if (
+						oldIndex < 0 ||
+						newIndex < 0 ||
+						oldIndex >= items.length ||
+						newIndex >= items.length
+					) {
+						console.error('Invalid indices:', { oldIndex, newIndex, length: items.length });
 						return;
 					}
 
-					isUpdatingPositions = true;
+					// Create new array with updated positions
+					const [movedItem] = items.splice(oldIndex, 1);
+					items.splice(newIndex, 0, movedItem);
+
 					try {
-						const items = [...$todos];
-						if (!items[oldIndex] || !items[newIndex]) {
-							console.error('Invalid indices for current items:', {
-								oldIndex,
-								newIndex,
-								itemCount: items.length
-							});
-							return;
-						}
-
-						console.log('Before reorder:', JSON.stringify(items, null, 2));
-						const [removed] = items.splice(oldIndex, 1);
-						items.splice(newIndex, 0, removed);
-						console.log('After reorder:', JSON.stringify(items, null, 2));
-
-						// Verify all items have IDs before updating
-						if (items.every((item) => item.id)) {
-							await updatePositions(items);
-						} else {
-							console.error('Some items are missing IDs:', items);
-							await loadAllItems(); // Restore original order
-						}
+						await updatePositions(items);
 					} catch (error) {
 						console.error('Error during reorder:', error);
-						await loadAllItems(); // Restore original order
-					} finally {
-						isUpdatingPositions = false;
+						await loadAllItems(); // Reload from database on error
 					}
 				}
 			});
@@ -149,6 +137,8 @@
 						</div>
 						<div class="flex items-center gap-4">
 							<span class="text-sm opacity-50">{new Date(item.created_at).toLocaleString()}</span>
+							<span class="text-sm opacity-50">pos: {item.position}</span>
+
 							<button
 								class="btn btn-ghost btn-sm text-error"
 								on:click={() => deleteItem(item.id)}

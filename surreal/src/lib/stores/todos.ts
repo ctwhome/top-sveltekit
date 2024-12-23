@@ -38,25 +38,9 @@ export async function initTodosLiveQuery() {
 
           // Set up new live query
           liveQueryId = await db.live('items', (async (action: string, id: RecordId) => {
-            console.log('Live query update:', { action, id });
-
-            try {
-              if (action === "DELETE") {
-                // For deletes, update the store directly
-                todos.update(items => {
-                  const filtered = items.filter(item => item.id.id !== id.id);
-                  console.log('Store updated after delete:', filtered.length);
-                  return filtered;
-                });
-              } else {
-                // For other actions, reload all items
-                await loadAllItems();
-              }
-            } catch (error) {
-              console.error('Error in live query callback:', error);
-              // Try to reload items on error
-              await loadAllItems();
-            }
+            // console.log('Live query update:', { action, id });
+            // Always reload items to get the latest state
+            await loadAllItems();
           }) as any);
 
           console.log('Live query set up successfully with ID:', liveQueryId);
@@ -109,16 +93,12 @@ export async function deleteItem(id: RecordId) {
 // Load all items and update store
 export async function loadAllItems() {
   try {
-    console.log('Loading all items');
+    // console.log('Loading all items');
     const results = await select<Item>('items');
-    // Sort by position if available, otherwise by created_at
-    const sortedResults = results.sort((a, b) => {
-      // console.log('Comparing items:', { a, b });
-      if (a.position != null && b.position != null) {
-        return a.position - b.position;
-      }
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-    });
+    // Sort by position
+    const sortedResults = results.sort((a, b) =>
+      (a.position ?? Infinity) - (b.position ?? Infinity)
+    );
     todos.set(sortedResults);
   } catch (error) {
     console.error('Failed to load items:', error);
@@ -129,15 +109,20 @@ export async function loadAllItems() {
 // Create a new item
 export async function addItem(text: string) {
   try {
+    // Get the highest position number
     const currentItems = get(todos);
-    const nextPosition = currentItems.length;
-    console.log('Creating new item:', { text, position: nextPosition });
+    const maxPosition = currentItems.reduce((max, item) =>
+      Math.max(max, item.position ?? -1), -1
+    );
+
+    console.log('Creating new item:', { text, position: maxPosition + 1 });
     const result = await create<Item>('items', {
       text,
       created_at: new Date().toISOString(),
-      position: nextPosition
+      position: maxPosition + 1
     });
     console.log('Created item:', result);
+    await loadAllItems();
   } catch (error) {
     console.error('Failed to add item:', error);
     throw error;
@@ -147,20 +132,48 @@ export async function addItem(text: string) {
 // Update item positions
 export async function updatePositions(items: Item[]) {
   try {
-    console.log('Updating positions for items:', JSON.stringify(items, null, 2));
-    // Ensure all items have valid IDs before proceeding
-    if (items.some(item => !item.id)) {
-      console.error('Invalid items array - some items missing IDs:', items);
+    // Find the range of items that need updating
+    const oldIndex = items.findIndex(item => item.position !== items.indexOf(item));
+    if (oldIndex === -1) {
+      console.log('No position changes needed');
       return;
     }
 
-    const updates = items.map((item, index) => {
-      console.log('Updating position:', { id: item.id, newPosition: index });
-      return db.update(item.id, { position: index });
-    });
-    await Promise.all(updates);
+    // Only update items that have moved
+    const updates = items
+      .map((item, index) => ({
+        id: item.id,
+        oldPosition: item.position,
+        newPosition: index
+      }))
+      .filter(update => update.oldPosition !== update.newPosition);
+
+    // console.log('Updating positions for items:', updates);
+
+    // Get current items to preserve their data
+    const currentItems = await select<Item>('items');
+    const itemsMap = new Map(currentItems.map(item => [item.id.id, item]));
+
+    // Update positions concurrently while preserving all item data
+    await Promise.all(
+      updates.map(update => {
+        const currentItem = itemsMap.get(update.id.id);
+        if (!currentItem) {
+          console.error('Item not found in database:', update);
+          return Promise.resolve();
+        }
+        return db.update(update.id, {
+          ...currentItem,
+          position: update.newPosition
+        });
+      })
+    );
+
+    // Reload items to get the new order
+    await loadAllItems();
   } catch (error) {
     console.error('Failed to update positions:', error);
+    await loadAllItems(); // Reload on error
     throw error;
   }
 }
