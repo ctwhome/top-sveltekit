@@ -1,15 +1,10 @@
 import { writable, get } from 'svelte/store';
 import { db, remove, select, update, create } from './db';
-
-// Define the SurrealDB Record ID type
-interface RecordId {
-  tb: string;
-  id: string;
-}
+import { RecordId } from 'surrealdb';
 
 // Define the Item interface
 export interface Item extends Record<string, unknown> {
-  id: string | RecordId;
+  id: RecordId;
   text: string;
   created_at: string;
   position: number;
@@ -21,22 +16,60 @@ export const todos = writable<Item[]>([]);
 // Initialize live query subscription
 export async function initTodosLiveQuery() {
   try {
-    // Wait for ready state
-    await db.ready;
-
     // Initial load
     await loadAllItems();
 
+    // Set up live query with retries
+    let liveQueryId: any;
+    const setupLiveQuery = async (retries = 3) => {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          // Ensure we're connected
+          await db.ready;
 
-    // Set up new live query
-    const liveQueryId = await db.live('items', (async (...args: any) => {
-      const [action, id] = args;
-      console.log('Live query update:', { action, id });
-      // Only reload on specific actions to avoid unnecessary updates
-      if (action === "CREATE" || action === "UPDATE" || action === "DELETE") {
-        await loadAllItems();
+          // Kill any existing live query
+          if (liveQueryId) {
+            try {
+              await db.kill(liveQueryId);
+            } catch (e) {
+              console.warn('Failed to kill previous live query:', e);
+            }
+          }
+
+          // Set up new live query
+          liveQueryId = await db.live('items', (async (action: string, id: RecordId) => {
+            console.log('Live query update:', { action, id });
+
+            try {
+              if (action === "DELETE") {
+                // For deletes, update the store directly
+                todos.update(items => {
+                  const filtered = items.filter(item => item.id.id !== id.id);
+                  console.log('Store updated after delete:', filtered.length);
+                  return filtered;
+                });
+              } else {
+                // For other actions, reload all items
+                await loadAllItems();
+              }
+            } catch (error) {
+              console.error('Error in live query callback:', error);
+              // Try to reload items on error
+              await loadAllItems();
+            }
+          }) as any);
+
+          console.log('Live query set up successfully with ID:', liveQueryId);
+          return;
+        } catch (error) {
+          console.error(`Live query setup attempt ${attempt} failed:`, error);
+          if (attempt === retries) throw error;
+          await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+        }
       }
-    }) as any);
+    };
+
+    await setupLiveQuery();
 
     // Return cleanup function
     return () => {
@@ -52,39 +85,25 @@ export async function initTodosLiveQuery() {
   }
 }
 
-// Helper to get clean ID with or without table prefix
-function getCleanId(id: unknown, preservePrefix: boolean = false): string {
-  if (typeof id === 'object' && id !== null && 'tb' in id && 'id' in id) {
-    // Handle SurrealDB Record ID object
-    return (id as { id: string }).id;
-  } else if (typeof id === 'string') {
-    if (preservePrefix) {
-      return id;
-    }
-    return id.startsWith('items:') ? id.replace('items:', '') : id;
-  } else {
-    console.error('Invalid ID type:', { id, type: typeof id });
-    return String(id);
-  }
-}
-
 // Delete an item
-export async function deleteItem(id: string | RecordId) {
-  // Always get clean ID without prefix since remove() adds the prefix internally
-  // const cleanId = getCleanId(id);
-  // console.log('Deleting item with ID:', { original: id, clean: cleanId });
+export async function deleteItem(id: RecordId) {
   try {
-    // Delete a specific item by its RecordId
-    const deletedItem = await db.delete(`${id.tb}:${id.id}`);
-    console.log("Deleted item:", deletedItem);
-    return deletedItem;
-  } catch (err) {
-    console.error("Failed to delete item:", err);
-  } finally {
-    console.log('🎹 sss');
+    console.log('Deleting item with ID:', id);
 
+    // Update the store optimistically
+    todos.update(items => items.filter(item => item.id.id !== id.id));
+
+    // Then perform the deletion
+    const result = await db.delete(id);
+    console.log('Delete result:', result);
+
+    return result;
+  } catch (err) {
+    console.error('Failed to delete item:', err);
+    // If deletion fails, reload items to restore the correct state
+    await loadAllItems();
+    throw err;
   }
-  // const result = await db.delete(`${table}:${id}`)
 }
 
 // Load all items and update store
@@ -92,7 +111,6 @@ export async function loadAllItems() {
   try {
     console.log('Loading all items');
     const results = await select<Item>('items');
-    // console.log('Raw results from DB:', JSON.stringify(results, null, 2));
     // Sort by position if available, otherwise by created_at
     const sortedResults = results.sort((a, b) => {
       // console.log('Comparing items:', { a, b });
@@ -137,9 +155,8 @@ export async function updatePositions(items: Item[]) {
     }
 
     const updates = items.map((item, index) => {
-      const cleanId = getCleanId(item.id);
-      console.log('Updating position:', { original: item.id, clean: cleanId, newPosition: index });
-      return update('items', cleanId, { position: index });
+      console.log('Updating position:', { id: item.id, newPosition: index });
+      return db.update(item.id, { position: index });
     });
     await Promise.all(updates);
   } catch (error) {

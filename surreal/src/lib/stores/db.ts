@@ -61,9 +61,16 @@ export async function initDB(retries = 3, delay = 1000) {
 
 // Helper function to ensure connection is ready
 async function ensureConnection() {
-  if (db.ready) {
-    await db.ready;
+  try {
+    // Try a simple query to check connection
+    await db.query('SELECT * FROM items LIMIT 1');
+  } catch (error) {
+    console.error('Connection check failed:', error);
+    // Try to reinitialize
+    await initDB();
   }
+  // Wait for ready state
+  await db.ready;
 }
 
 // Helper function to create records
@@ -138,31 +145,26 @@ export async function update<T>(table: string, id: string, data: Partial<T>, ret
 
 // Helper function to delete a record
 export async function remove(table: string, id: string, retries = 3) {
-  await ensureConnection();
   for (let attempt = 1; attempt <= retries; attempt++) {
-
     try {
-      // Delete a specific item by its RecordId
-      const deletedItem = await db.delete(`items:${id.id}`);
-      console.log("Deleted item:", deletedItem);
-      return deletedItem;
-    } catch (err) {
-      console.error("Failed to delete item:", err);
-    } finally {
-      console.log('🎹 Closing connection');
+      // Ensure connection before each attempt
+      await ensureConnection();
 
-      // await db.close();
-    }
-
-    try {
+      // Use the direct delete method with the full record ID
+      console.log('Attempting to delete:', { table, id });
       const result = await db.delete(`${table}:${id}`);
+      console.log('Delete response:', result);
+
+      // A successful deletion might return undefined or an empty array
+      // We only want to retry if there's an actual error
       return result;
     } catch (error) {
+      console.error(`Delete attempt ${attempt} failed:`, error);
       if (attempt === retries) {
-        console.error(`Failed to delete record from ${table}:`, error);
         throw error;
       }
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait longer between retries
+      await new Promise(resolve => setTimeout(resolve, attempt * 1000));
     }
   }
 }

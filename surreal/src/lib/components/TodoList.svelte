@@ -12,6 +12,7 @@
 	} from '$lib/stores/todos';
 	import { onDestroy, onMount } from 'svelte';
 	import Sortable from 'sortablejs';
+	import { RecordId } from 'surrealdb';
 
 	let newItemText = '';
 	let cleanup: (() => void) | undefined;
