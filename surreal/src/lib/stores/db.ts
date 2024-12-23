@@ -140,6 +140,20 @@ export async function update<T>(table: string, id: string, data: Partial<T>, ret
 export async function remove(table: string, id: string, retries = 3) {
   await ensureConnection();
   for (let attempt = 1; attempt <= retries; attempt++) {
+
+    try {
+      // Delete a specific item by its RecordId
+      const deletedItem = await db.delete(`items:${id.id}`);
+      console.log("Deleted item:", deletedItem);
+      return deletedItem;
+    } catch (err) {
+      console.error("Failed to delete item:", err);
+    } finally {
+      console.log('🎹 Closing connection');
+
+      // await db.close();
+    }
+
     try {
       const result = await db.delete(`${table}:${id}`);
       return result;

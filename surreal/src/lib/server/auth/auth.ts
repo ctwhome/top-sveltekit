@@ -1,7 +1,13 @@
 import { SvelteKitAuth } from "@auth/sveltekit";
 import CredentialsProvider from "@auth/core/providers/credentials";
+import { SurrealDBAdapter } from "@auth/surrealdb-adapter";
 import type { Provider } from "@auth/core/providers";
 import type { User } from "@auth/core/types";
+import clientPromise from "../db/surrealdb";
+
+if (!process.env.AUTH_SECRET) {
+  throw new Error('AUTH_SECRET environment variable is required');
+}
 
 const providers: Provider[] = [
   CredentialsProvider({
@@ -40,7 +46,8 @@ const providers: Provider[] = [
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
   providers,
-  secret: "your-secret-key", // In production, use process.env.AUTH_SECRET
+  adapter: SurrealDBAdapter(clientPromise),
+  secret: process.env.AUTH_SECRET,
   trustHost: true,
   session: {
     strategy: "jwt"
@@ -54,24 +61,11 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
       }
       return token;
     },
-
     async session({ session, token }) {
-
-      if (token) {
-        if (session.user) {
-          session.user.email = token.email as string;
-          session.user.name = token.name as string | null;
-          (session.user as any).id = token.id;
-        }
-
-        // Add token information to session
-        (session as any).token = {
-          jti: token.jti,
-          iat: token.iat,
-          exp: token.exp,
-          sub: token.sub,
-          raw: token // Include the full token for display
-        };
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string | null;
       }
       return session;
     }

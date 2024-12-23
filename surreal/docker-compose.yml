@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: surreal_db
+    ports:
+      - "8000:8000"
+    command: start --user root --pass root --bind 0.0.0.0:8000 file:/data/database.db
+    volumes:
+      - ./mydb:/data
+    restart: unless-stopped
