@@ -12,16 +12,14 @@
 		error = null;
 
 		try {
-			const result = await signIn('credentials', {
+			await signIn('credentials', {
 				email,
 				password,
 				redirect: true,
 				callbackUrl: '/dashboard'
 			});
-
-			if (!result) {
-				error = 'Invalid email or password';
-			}
+			// If we reach this point and haven't redirected, it means there was an auth error
+			error = 'Invalid email or password';
 		} catch (e) {
 			error = 'An error occurred during login';
 		} finally {
@@ -33,6 +31,7 @@
 <div class="bg-base-200 flex min-h-screen items-center justify-center">
 	<div class="card bg-base-100 w-96 shadow-xl">
 		<div class="card-body">
+			<h1 class="mb-2 text-center text-2xl font-bold">Sveltekit + Surreal</h1>
 			<h2 class="card-title mb-4 justify-center">Login</h2>
 
 			{#if error}
