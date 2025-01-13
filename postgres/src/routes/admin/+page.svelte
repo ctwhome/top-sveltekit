@@ -68,7 +68,7 @@
 	});
 </script>
 
-<div class="container mx-auto space-y-8 p-4">
+<div class="container mx-auto grid grid-rows-[auto_1fr] space-y-8">
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold">User Management</h1>
