@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import UserCircle from '~icons/heroicons/user-circle';
 	import ShieldCheck from '~icons/heroicons/shield-check';
+	import CreateUserModal from './CreateUserModal.svelte';
 
 	interface User {
 		id: number;
@@ -50,10 +51,20 @@
 	});
 </script>
 
-<div class="container mx-auto p-4">
-	<div class="mb-6 flex items-center justify-between">
-		<h1 class="text-2xl font-bold">User Management</h1>
-		<div class="badge badge-primary">{users.length} Users</div>
+<div class="container mx-auto space-y-8 p-4">
+	<div class="flex items-center justify-between">
+		<div>
+			<h1 class="text-2xl font-bold">User Management</h1>
+			<div class="badge badge-primary mt-2">{users.length} Users</div>
+		</div>
+
+		<CreateUserModal
+			onUserCreated={async () => {
+				const response = await fetch('/api/admin/users');
+				if (!response.ok) throw new Error('Failed to fetch users');
+				users = await response.json();
+			}}
+		/>
 	</div>
 
 	{#if loading}
