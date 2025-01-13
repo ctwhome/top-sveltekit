@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import UserCircle from '~icons/heroicons/user-circle';
 	import ShieldCheck from '~icons/heroicons/shield-check';
+	import MoreVertical from '~icons/lucide/more-vertical';
+	import Trash from '~icons/lucide/trash';
 	import CreateUserModal from './CreateUserModal.svelte';
 
 	interface User {
@@ -16,6 +18,21 @@
 	let error: string | null = null;
 	import { Role } from '$lib/types';
 	let availableRoles = [Role.USER, Role.ADMIN];
+
+	async function deleteUser(userId: number) {
+		try {
+			const response = await fetch(`/api/admin/users/${userId}`, {
+				method: 'DELETE'
+			});
+
+			if (!response.ok) throw new Error('Failed to delete user');
+
+			// Refresh user list
+			users = users.filter((user) => user.id !== userId);
+		} catch (e: unknown) {
+			error = e instanceof Error ? e.message : 'An unknown error occurred';
+		}
+	}
 
 	async function updateUserRole(userId: number, role: string, currentRoles: string[]) {
 		try {
@@ -84,6 +101,7 @@
 						<th>User</th>
 						<th>Email</th>
 						<th>Roles</th>
+						<th class="w-20">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -145,6 +163,31 @@
 											</div>
 										{/if}
 									</div>
+								</div>
+							</td>
+							<td>
+								<div class="dropdown dropdown-end">
+									<button tabindex="0" class="btn btn-ghost btn-sm">
+										<MoreVertical class="h-5 w-5" />
+									</button>
+									<ul
+										tabindex="0"
+										class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
+									>
+										<li>
+											<button
+												class="text-error"
+												onclick={() => {
+													if (confirm('Are you sure you want to delete this user?')) {
+														deleteUser(user.id);
+													}
+												}}
+											>
+												<Trash class="h-4 w-4" />
+												Delete User
+											</button>
+										</li>
+									</ul>
 								</div>
 							</td>
 						</tr>
