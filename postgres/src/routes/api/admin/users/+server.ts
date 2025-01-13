@@ -2,7 +2,7 @@ import { json, error } from '@sveltejs/kit';
 import { pool } from '$lib/db/db';
 import { Role } from '$lib/types';
 import type { RequestEvent } from './$types';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export async function POST({ request, locals }: RequestEvent) {
   const session = await locals.getSession();
