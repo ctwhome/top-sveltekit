@@ -13,6 +13,7 @@ interface CustomUser extends Omit<User, 'email'> {
 // Extend the Session type to include our custom user
 interface CustomSession extends Omit<Session, 'user'> {
 	user: CustomUser;
+	provider?: string;
 }
 
 // Define credentials type for auth
