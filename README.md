@@ -15,7 +15,8 @@ Examples to showcase the different technologies and databases that can be used w
   - AuthJS for OAuth and access to database with RLS (Row Level Security)
 - **SurrealDB**:
   - Gatekeeper with Credentials and Google OAuth via JWT (non-encrypted to support SurrealDB)
-
+- **Tinybase**:
+  - Simple Working example with Typescrupte that sycns and save data locally with indexedDb and WebSockets.
 ## Projects
 
 - [Top SvelteKit projects with different technologies and databases.](https://github.com/ctw008/top-sveltekit)

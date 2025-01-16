@@ -2,7 +2,10 @@
   "name": "vite-tinybase-ts",
   "version": "1.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "bun run dev:all",
+    "dev:all": "bun run dev:server & bun run dev:client",
+    "dev:client": "vite",
+    "dev:server": "cd server && bun run index.ts",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
