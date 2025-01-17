@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestEvent } from './$types';
-import { pool } from '$lib/db/db';
+import { sql } from '$lib/db';
 import bcryptjs from 'bcryptjs';
 
 export async function PUT({ request, locals }: RequestEvent) {
@@ -10,20 +10,24 @@ export async function PUT({ request, locals }: RequestEvent) {
   }
 
   const { oldPassword, newPassword } = await request.json();
+  if (!oldPassword || !newPassword) {
+    throw error(400, 'Both old and new passwords are required');
+  }
 
   try {
     // Get user from database
-    const user = await pool.query(
-      'SELECT id, password FROM auth_user WHERE email = $1',
-      [session.user.email]
-    );
+    const [user] = await sql`
+      SELECT id, password
+      FROM auth_user
+      WHERE email = ${session.user.email}
+    `;
 
-    if (!user.rows[0]) {
+    if (!user) {
       return json({ message: 'User not found' }, { status: 404 });
     }
 
     // Verify old password
-    const validPassword = await bcryptjs.compare(oldPassword, user.rows[0].password);
+    const validPassword = await bcryptjs.compare(oldPassword, user.password);
     if (!validPassword) {
       throw error(400, 'Current password is incorrect');
     }
@@ -32,10 +36,11 @@ export async function PUT({ request, locals }: RequestEvent) {
     const hashedPassword = await bcryptjs.hash(newPassword, 10);
 
     // Update password
-    await pool.query(
-      'UPDATE auth_user SET password = $1 WHERE id = $2',
-      [hashedPassword, user.rows[0].id]
-    );
+    await sql`
+      UPDATE auth_user
+      SET password = ${hashedPassword}
+      WHERE id = ${user.id}
+    `;
 
     return json({ message: 'Password updated successfully' });
   } catch (err: unknown) {

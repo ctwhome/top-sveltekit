@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import { pool } from '$lib/db/db';
+import { sql } from '$lib/db';
 import { Role } from '$lib/types';
 import type { RequestEvent } from './$types';
 
@@ -15,9 +15,13 @@ export async function DELETE({ params, locals }: RequestEvent) {
   }
 
   try {
-    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [params.userId]);
+    const [user] = await sql`
+      DELETE FROM users
+      WHERE id = ${params.userId}
+      RETURNING id
+    `;
 
-    if (result.rowCount === 0) {
+    if (!user) {
       throw error(404, 'User not found');
     }
 
