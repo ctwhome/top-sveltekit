@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Logo from '$lib/assets/icons/Logo.svelte';
 	import FeedbackButton from '$lib/components/ui/feedback/FeedbackButton.svelte';
-	import { onMount } from 'svelte';
 	import Login from '$lib/components/ui/Login/LoginButton.svelte';
 	import { toggleMenu } from '$lib/stores/menu.store';
 	import IconamoonMenuBurgerHorizontalBold from '~icons/iconamoon/menu-burger-horizontal-bold';
@@ -10,22 +9,6 @@
 	import { ThemeChange } from 'ctw-kit';
 
 	let activeCategory = '';
-	let isDesktop = $state(true);
-
-	onMount(() => {
-		const mediaQuery = window.matchMedia('(min-width: 640px)');
-		isDesktop = mediaQuery.matches;
-
-		const handleMediaQueryChange = (e: MediaQueryListEvent) => {
-			isDesktop = e.matches;
-		};
-
-		mediaQuery.addEventListener('change', handleMediaQueryChange);
-
-		return () => {
-			mediaQuery.removeEventListener('change', handleMediaQueryChange);
-		};
-	});
 </script>
 
 <nav class="bien-nav mb-10">
@@ -53,7 +36,7 @@
 				{#each menuItems as link}
 					<a
 						class="menu-link"
-						onclick={() => (active = link.title)}
+						onclick={() => (activeCategory = link.title)}
 						class:active={activeCategory === link.title}
 						href={link.path}
 					>
@@ -62,7 +45,7 @@
 				{/each}
 			</div>
 
-			<FeedbackButton showButton={isDesktop} />
+			<FeedbackButton class="hidden sm:block" />
 			<ThemeChange class="z-50 ml-auto sm:ml-14 " />
 
 			<Login />
