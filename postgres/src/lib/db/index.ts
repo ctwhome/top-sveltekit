@@ -9,6 +9,7 @@ import {
   IDLE_TIMEOUT_MILLIS,
   CONNECTION_TIMEOUT_MILLIS
 } from "$env/static/private"
+
 import {
   PUBLIC_DB_HOST,
   PUBLIC_DB_PORT,
@@ -23,10 +24,10 @@ import { dev } from '$app/environment';
 
 // Configure postgres.js connection for application queries
 export const sql = postgres({
-  host: dev ? PUBLIC_DB_HOST : DB_HOST,
-  port: dev ? Number(PUBLIC_DB_PORT) : Number(DB_PORT) || 5432,
-  user: dev ? PUBLIC_DB_USER : DB_USER,
-  password: dev ? PUBLIC_DB_PASSWORD : DB_PASSWORD,
+  host: dev ? PUBLIC_DB_HOST || 'localhost' : DB_HOST,
+  port: dev ? Number(PUBLIC_DB_PORT || 5432) : Number(DB_PORT) || 5432,
+  user: dev ? PUBLIC_DB_USER || 'postgres' : DB_USER,
+  password: dev ? PUBLIC_DB_PASSWORD || 'postgres' : DB_PASSWORD,
   database: dev ? PUBLIC_DB_NAME : DB_NAME,
   ssl: dev ? false : DB_SSL === 'true',
   max: Number(MAX_CLIENTS) || 20,

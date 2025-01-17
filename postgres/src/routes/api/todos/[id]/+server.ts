@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { sql } from '$lib/db/db';
+import { sql } from '$lib/db';
 
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   const session = await locals.getSession();
