@@ -1,13 +1,8 @@
 import { writable } from 'svelte/store';
+import type { InferSelectModel } from 'drizzle-orm';
+import type { todos } from '$lib/db/schema';
 
-interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-}
+type Todo = InferSelectModel<typeof todos>;
 
 interface TodoState {
   todos: Todo[];

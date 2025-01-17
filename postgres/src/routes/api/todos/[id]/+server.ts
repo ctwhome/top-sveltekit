@@ -1,6 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { query } from '$lib/db/db';
+import { db } from '$lib/db/db';
+import { todos } from '$lib/db/schema';
+import { eq, and } from 'drizzle-orm';
 
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   const session = await locals.getSession();
@@ -14,16 +16,21 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return new Response('Invalid completed value', { status: 400 });
     }
 
-    const result = await query(
-      'UPDATE todos SET completed = $1 WHERE id = $2 AND user_id = $3 RETURNING *',
-      [completed, params.id, session.user.id]
-    );
+    const [updatedTodo] = await db.update(todos)
+      .set({ completed })
+      .where(
+        and(
+          eq(todos.id, params.id),
+          eq(todos.userId, parseInt(session.user.id))
+        )
+      )
+      .returning();
 
-    if (result.rows.length === 0) {
+    if (!updatedTodo) {
       return new Response('Todo not found', { status: 404 });
     }
 
-    return json(result.rows[0]);
+    return json(updatedTodo);
   } catch (error) {
     console.error('Error updating todo:', error);
     return new Response('Internal Server Error', { status: 500 });
@@ -37,12 +44,16 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   }
 
   try {
-    const result = await query(
-      'DELETE FROM todos WHERE id = $1 AND user_id = $2 RETURNING id',
-      [params.id, session.user.id]
-    );
+    const [deletedTodo] = await db.delete(todos)
+      .where(
+        and(
+          eq(todos.id, params.id),
+          eq(todos.userId, parseInt(session.user.id))
+        )
+      )
+      .returning();
 
-    if (result.rows.length === 0) {
+    if (!deletedTodo) {
       return new Response('Todo not found', { status: 404 });
     }
 
