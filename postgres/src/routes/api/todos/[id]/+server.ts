@@ -46,10 +46,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const todoId = params.id;
 
     const [todo] = await sql`
-      DELETE FROM todos
-      WHERE id = ${todoId}
-      AND user_id = ${session.user.id}
-      RETURNING id
+      DELETE FROM todos WHERE id = ${todoId} AND user_id = ${session.user.id} RETURNING id
     `;
 
     if (!todo) {
