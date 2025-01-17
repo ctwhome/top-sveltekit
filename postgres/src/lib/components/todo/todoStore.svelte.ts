@@ -1,4 +1,3 @@
-import { persisted } from 'svelte-persisted-store';
 
 interface Todo {
   id: string;
