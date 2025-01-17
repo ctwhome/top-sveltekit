@@ -1,10 +1,10 @@
 # Drizzle example with
-
+Locally using a drizzle datbase
 
 ```sql
-CREATE DATABASE my_new_db;
+CREATE DATABASE drizzle;
 CREATE USER my_new_user WITH PASSWORD 'postgres';
-GRANT ALL PRIVILEGES ON DATABASE my_new_db TO my_new_user;
+GRANT ALL PRIVILEGES ON DATABASE drizzle TO my_new_user;
 ```
 
 
