@@ -8,10 +8,7 @@
 	import FooterMain from '$components/ui/footerMain.svelte';
 	import DevEnvironmentBanner from '$components/ui/DevEnvironmentBanner.svelte';
 
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
-	let { children }: Props = $props();
+	let { children } = $props();
 </script>
 
 <Analytics />
