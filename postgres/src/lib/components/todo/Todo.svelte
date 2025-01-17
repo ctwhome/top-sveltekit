@@ -1,31 +1,37 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { todoStore } from '$components/todo/todoStore';
-	import { page } from '$app/stores';
+	import {
+		todoStore,
+		addTodo,
+		toggleTodo,
+		deleteTodo,
+		getTodos
+	} from '$components/todo/todoStore.svelte';
 	import AddIcon from '~icons/material-symbols/add';
 	import ErrorIcon from '~icons/material-symbols/error';
 	import DeleteIcon from '~icons/material-symbols/delete';
+	import { page } from '$app/stores';
 
 	let newTodoTitle = '';
 
 	onMount(() => {
-		if ($page.data.session && (!$todoStore.todos.length || $todoStore.error)) {
-			todoStore.syncWithServer();
+		if ($page.data.session && (!todoStore.todos.length || todoStore.error)) {
+			getTodos();
 		}
 	});
 
 	async function handleSubmit() {
 		if (!newTodoTitle.trim()) return;
-		await todoStore.addTodo(newTodoTitle.trim());
+		await addTodo(newTodoTitle.trim());
 		newTodoTitle = '';
 	}
 
 	async function handleToggle(id: string, completed: boolean) {
-		await todoStore.toggleTodo(id, !completed);
+		await toggleTodo(id, !completed);
 	}
 
 	async function handleDelete(id: string) {
-		await todoStore.deleteTodo(id);
+		await deleteTodo(id);
 	}
 </script>
 
@@ -49,45 +55,34 @@
 		</button>
 	</form>
 
-	{#if $todoStore.loading}
-		<div class="flex justify-center">
-			<span class="loading loading-spinner loading-lg"></span>
-		</div>
-	{:else if $todoStore.error}
-		<div class="alert alert-error">
-			<ErrorIcon class="h-5 w-5" />
-			<span>{$todoStore.error}</span>
-		</div>
-	{:else}
-		<div class="space-y-2">
-			{#each $todoStore.todos as todo (todo.id)}
-				<div class="card bg-base-200">
-					<div class="card-body flex-row items-center justify-between p-4">
-						<div class="flex flex-grow items-center gap-3">
-							<input
-								type="checkbox"
-								checked={todo.completed}
-								onchange={() => handleToggle(todo.id, todo.completed)}
-								class="checkbox"
-							/>
-							<span class:line-through={todo.completed}>
-								{todo.title}
-							</span>
-						</div>
-						<button
-							type="button"
-							onclick={() => handleDelete(todo.id)}
-							class="btn btn-ghost btn-sm text-error"
-						>
-							<DeleteIcon class="h-5 w-5" />
-						</button>
+	<div class="space-y-2">
+		{#each todoStore.todos as todo (todo.id)}
+			<div class="card bg-base-200">
+				<div class="card-body flex-row items-center justify-between p-4">
+					<div class="flex flex-grow items-center gap-3">
+						<input
+							type="checkbox"
+							checked={todo.completed}
+							onchange={() => handleToggle(todo.id, todo.completed)}
+							class="checkbox"
+						/>
+						<span class:line-through={todo.completed}>
+							{todo.title}
+						</span>
 					</div>
+					<button
+						type="button"
+						onclick={() => handleDelete(todo.id)}
+						class="btn btn-ghost btn-sm text-error"
+					>
+						<DeleteIcon class="h-5 w-5" />
+					</button>
 				</div>
-			{/each}
+			</div>
+		{/each}
 
-			{#if $todoStore.todos.length === 0}
-				<div class="py-4 text-center text-gray-500">No todos yet. Add one above!</div>
-			{/if}
-		</div>
-	{/if}
+		{#if todoStore.todos.length === 0}
+			<div class="py-4 text-center text-gray-500">No todos yet. Add one above!</div>
+		{/if}
+	</div>
 </div>
