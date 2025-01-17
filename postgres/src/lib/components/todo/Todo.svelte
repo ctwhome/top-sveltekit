@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { todoStore } from '$lib/stores/todoStore';
+	import { todoStore } from '$components/todo/todoStore';
 	import { page } from '$app/stores';
 	import AddIcon from '~icons/material-symbols/add';
 	import ErrorIcon from '~icons/material-symbols/error';
