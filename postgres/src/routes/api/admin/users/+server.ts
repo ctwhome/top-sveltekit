@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import { pool } from '$lib/db/db';
+import { sql } from '$lib/db/db';
 import { Role } from '$lib/types';
 import type { RequestEvent } from './$types';
 import bcrypt from 'bcryptjs';
@@ -16,11 +16,18 @@ export async function POST({ request, locals }: RequestEvent) {
   }
 
   const { email, password, name, role } = await request.json();
+  if (!email || !password || !name) {
+    throw error(400, 'Missing required fields');
+  }
 
   try {
     // Check if user already exists
-    const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (existingUser.rows.length > 0) {
+    const [existingUser] = await sql`
+      SELECT * FROM users
+      WHERE email = ${email}
+    `;
+
+    if (existingUser) {
       throw error(400, 'User already exists');
     }
 
@@ -28,12 +35,13 @@ export async function POST({ request, locals }: RequestEvent) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert new user with role
-    const result = await pool.query(
-      'INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
-      [email, hashedPassword, name, role || Role.USER]
-    );
+    const [user] = await sql`
+      INSERT INTO users (email, password, name, role)
+      VALUES (${email}, ${hashedPassword}, ${name}, ${role || Role.USER})
+      RETURNING id, email, name, role
+    `;
 
-    return json(result.rows[0]);
+    return json(user);
   } catch (err) {
     console.error('User creation error:', err);
     throw error(500, 'Failed to create user');
@@ -52,7 +60,7 @@ export async function GET({ locals }: RequestEvent) {
   }
 
   try {
-    const result = await pool.query(`
+    const users = await sql`
       SELECT
         id,
         email,
@@ -60,10 +68,10 @@ export async function GET({ locals }: RequestEvent) {
         ARRAY[role] as roles
       FROM users
       ORDER BY id
-    `);
+    `;
 
-    return json(result.rows);
+    return json(users);
   } catch (err) {
     throw error(500, 'Failed to fetch users');
   }
-}
+};

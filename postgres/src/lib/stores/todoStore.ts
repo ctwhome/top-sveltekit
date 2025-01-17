@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { persisted } from 'svelte-persisted-store';
 
 interface Todo {
   id: string;
@@ -16,7 +16,7 @@ interface TodoState {
 }
 
 function createTodoStore() {
-  const { subscribe, set, update } = writable<TodoState>({
+  const { subscribe, set, update } = persisted<TodoState>('todos', {
     todos: [],
     loading: false,
     error: null
@@ -24,7 +24,8 @@ function createTodoStore() {
 
   return {
     subscribe,
-    fetchTodos: async () => {
+    set,
+    syncWithServer: async () => {
       update(state => ({ ...state, loading: true }));
       try {
         const response = await fetch('/api/todos');

@@ -9,8 +9,8 @@
 	let newTodoTitle = '';
 
 	onMount(() => {
-		if ($page.data.session) {
-			todoStore.fetchTodos();
+		if ($page.data.session && (!$todoStore.todos.length || $todoStore.error)) {
+			todoStore.syncWithServer();
 		}
 	});
 
