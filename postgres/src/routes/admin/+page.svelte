@@ -170,10 +170,7 @@
 									<button tabindex="0" class="btn btn-ghost btn-sm">
 										<MoreVertical class="h-5 w-5" />
 									</button>
-									<ul
-										tabindex="0"
-										class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
-									>
+									<ul class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow">
 										<li>
 											<button
 												class="text-error"

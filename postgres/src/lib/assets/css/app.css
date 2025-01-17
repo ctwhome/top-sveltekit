@@ -40,3 +40,8 @@ a[target="_blank"] {
   max-width: 250px;
   /* Limits the width to prevent extremely wide cells */
 }
+
+/* Global toast styles */
+.toaster {
+  margin-top: 60px;
+}

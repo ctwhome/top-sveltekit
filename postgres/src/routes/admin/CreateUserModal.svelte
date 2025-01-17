@@ -151,5 +151,15 @@
 			</div>
 		</form>
 	</div>
-	<div class="modal-backdrop" onclick={() => (modalOpen = false)} />
+	<div
+		class="modal-backdrop"
+		role="button"
+		onclick={() => (modalOpen = false)}
+		onkeydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				modalOpen = false;
+			}
+		}}
+		tabindex="0"
+	></div>
 </dialog>

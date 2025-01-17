@@ -17,9 +17,3 @@
 		style: 'background: rgba(40, 40, 40, 0.9); color: #FFF; font-weight: 500;'
 	}}
 />
-
-<style>
-	:global(.toaster) {
-		margin-top: 60px;
-	}
-</style>

@@ -1,6 +1,3 @@
----
-layout: blog
----
 <script>
   import TiltContent from '$lib/components/ui/TiltContent.svelte'
   import ProfilePicture from '$lib/components/ui/ProfilePicture.svelte'

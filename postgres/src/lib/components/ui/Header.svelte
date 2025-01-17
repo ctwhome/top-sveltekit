@@ -1,18 +1,15 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { browser } from '$app/environment';
 	import Logo from '$lib/assets/icons/Logo.svelte';
 	import FeedbackButton from '$lib/components/ui/feedback/FeedbackButton.svelte';
-	import DaisyUIThemeSwitcher from '$lib/components/ui/themeChamge/DaisyUIThemeSwitcher.svelte';
 	import { onMount } from 'svelte';
 	import Login from '$lib/components/ui/Login/LoginButton.svelte';
 	import { toggleMenu } from '$lib/stores/menu.store';
 	import IconamoonMenuBurgerHorizontalBold from '~icons/iconamoon/menu-burger-horizontal-bold';
 	import menuItems from '$lib/models/menu-itmes';
 
-	let active = $state('Latest Work');
+	import { ThemeChange } from 'ctw-kit';
+
 	let activeCategory = '';
-	let activeTag = '';
 	let isDesktop = $state(true);
 
 	onMount(() => {
@@ -66,8 +63,7 @@
 			</div>
 
 			<FeedbackButton showButton={isDesktop} />
-
-			<DaisyUIThemeSwitcher class="z-50 ml-auto sm:ml-14 " />
+			<ThemeChange class="z-50 ml-auto sm:ml-14 " />
 
 			<Login />
 		</header>

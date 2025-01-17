@@ -74,12 +74,11 @@
   "type": "module",
   "dependencies": {
     "@auth/sveltekit": "^1.7.4",
-    "ctw-kit": "^1.0.38",
+    "ctw-kit": "^1.0.39",
     "date-fns": "^4.1.0",
     "node-html-parser": "^7.0.1",
     "sortablejs": "^1.15.6",
     "svelte-french-toast": "^1.2.0",
-    "theme-change": "^2.5.0",
     "vanilla-tilt": "^1.8.1"
   }
 }
