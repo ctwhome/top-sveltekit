@@ -56,6 +56,19 @@
 	</form>
 
 	<div class="space-y-2">
+		{#if todoStore.loading}
+			<div class="flex justify-center">
+				<span class="loading loading-dots"></span>
+			</div>
+		{:else if todoStore.error}
+			<div class="alert alert-error">
+				<ErrorIcon class="h-5 w-5" />
+				<span>{todoStore.error}</span>
+			</div>
+		{:else if todoStore.todos.length === 0}
+			<div class="py-4 text-center text-gray-500">No todos yet. Add one above!</div>
+		{/if}
+
 		{#each todoStore.todos as todo (todo.id)}
 			<div class="card bg-base-200">
 				<div class="card-body flex-row items-center justify-between p-4">
@@ -80,9 +93,5 @@
 				</div>
 			</div>
 		{/each}
-
-		{#if todoStore.todos.length === 0}
-			<div class="py-4 text-center text-gray-500">No todos yet. Add one above!</div>
-		{/if}
 	</div>
 </div>

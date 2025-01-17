@@ -17,7 +17,7 @@ interface TodoState {
 
 export const todoStore = $state<TodoState>({
   todos: [],
-  loading: false,
+  loading: true,
   error: null
 });
 
@@ -27,18 +27,16 @@ export const getTodos = async () => {
     const response = await fetch('/api/todos');
     if (!response.ok) throw new Error('Failed to fetch todos');
     const data = await response.json();
-
     todoStore.todos = data;
-    todoStore.loading = false;
     todoStore.error = null;
   } catch (error) {
     todoStore.error = error instanceof Error ? error.message : 'An error occurred';
+  } finally {
     todoStore.loading = false;
   }
 };
 
 export const addTodo = async (title: string) => {
-  todoStore.loading = true;
   try {
     const response = await fetch('/api/todos', {
       method: 'POST',
@@ -49,16 +47,13 @@ export const addTodo = async (title: string) => {
     const data = await response.json();
 
     todoStore.todos = [data, ...todoStore.todos];
-    todoStore.loading = false;
     todoStore.error = null;
   } catch (error) {
     todoStore.error = error instanceof Error ? error.message : 'An error occurred';
-    todoStore.loading = false;
   }
 };
 
 export const toggleTodo = async (id: string, completed: boolean) => {
-  todoStore.loading = true;
   try {
     const response = await fetch(`/api/todos/${id}`, {
       method: 'PATCH',
@@ -71,26 +66,20 @@ export const toggleTodo = async (id: string, completed: boolean) => {
     todoStore.todos = todoStore.todos.map(todo =>
       todo.id === id ? data : todo
     );
-    todoStore.loading = false;
     todoStore.error = null;
   } catch (error) {
     todoStore.error = error instanceof Error ? error.message : 'An error occurred';
-    todoStore.loading = false;
   }
 };
 
 export const deleteTodo = async (id: string) => {
-  todoStore.loading = true;
   try {
     const response = await fetch(`/api/todos/${id}`, { method: 'DELETE' });
     if (!response.ok) throw new Error('Failed to delete todo');
-
     todoStore.todos = todoStore.todos.filter(todo => todo.id !== id);
-    todoStore.loading = false;
     todoStore.error = null;
   } catch (error) {
     todoStore.error = error instanceof Error ? error.message : 'An error occurred';
-    todoStore.loading = false;
   }
 };
 
