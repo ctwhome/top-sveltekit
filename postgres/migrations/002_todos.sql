@@ -1,3 +1,6 @@
+-- Up Migration
+
+
 -- Create todos table with user relationship
 CREATE TABLE IF NOT EXISTS todos (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -25,3 +28,7 @@ CREATE TRIGGER update_todos_updated_at
 
 -- Create index on user_id for faster lookups
 CREATE INDEX idx_todos_user_id ON todos(user_id);
+
+
+-- Down Migration
+DROP TABLE todos;

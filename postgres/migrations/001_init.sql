@@ -41,9 +41,7 @@ INSERT INTO users (name, email, password, "emailVerified", image) VALUES
 
 
 -- Assign admin role
-UPDATE users
-SET role = 'admin'
-WHERE email = 'alice@ctwhome.com';
+UPDATE users  SET role = 'admin' WHERE email = 'alice@ctwhome.com';
 
 -- Auto-assign admin role to specific Google user
 CREATE OR REPLACE FUNCTION assign_admin_role()

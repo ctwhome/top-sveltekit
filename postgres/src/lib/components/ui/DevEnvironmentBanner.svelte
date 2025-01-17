@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
-	import {
-		PUBLIC_DB_HOST,
-		PUBLIC_DB_PORT,
-		PUBLIC_DB_USER,
-		PUBLIC_DB_NAME
-	} from '$env/static/public';
 	import Database from '~icons/lucide/database';
 	import Server from '~icons/lucide/server';
 	import User from '~icons/lucide/user';
+
+	export let dbInfo: {
+		host: string;
+		database: string;
+		user: string;
+	};
 </script>
 
 {#if dev}
@@ -21,17 +21,15 @@
 			</div>
 			<div class="flex items-center gap-1">
 				<Server class="size-4" />
-				<span>
-					{dev ? PUBLIC_DB_HOST : 'localhost'}:{dev ? PUBLIC_DB_PORT : '5432'}
-				</span>
+				<span>{dbInfo.host}</span>
 			</div>
 			<div class="flex items-center gap-1">
 				<User class="size-4" />
-				<span>{dev ? PUBLIC_DB_USER : 'postgres'}</span>
+				<span>{dbInfo.user}</span>
 			</div>
 			<div class="flex items-center gap-1">
 				<Database class="size-4" />
-				<span>{dev ? PUBLIC_DB_NAME : 'postgres'}</span>
+				<span>{dbInfo.database}</span>
 			</div>
 		</div>
 	</div>

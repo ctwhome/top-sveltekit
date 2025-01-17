@@ -8,7 +8,7 @@
 	import FooterMain from '$components/ui/footerMain.svelte';
 	import DevEnvironmentBanner from '$components/ui/DevEnvironmentBanner.svelte';
 
-	let { children } = $props();
+	export let data;
 </script>
 
 <Analytics />
@@ -19,11 +19,7 @@
 >
 	<Header />
 	<SideMenu />
-	{#if children}
-		{@render children()}
-	{:else}
-		<!-- Content here -->
-	{/if}
+	<slot />
 	<FooterMain />
-	<DevEnvironmentBanner />
+	<DevEnvironmentBanner dbInfo={data.dbInfo} />
 </div>
