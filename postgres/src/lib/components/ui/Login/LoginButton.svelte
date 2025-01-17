@@ -16,6 +16,7 @@
 			>
 				<img
 					alt="User avatar"
+					draggable="false"
 					class="size-8 cursor-pointer rounded-full ring-primary ring-offset-2 ring-offset-base-100"
 					class:ring-2={$page.data.session?.user?.roles?.includes(Role.ADMIN)}
 					src={$page.data?.session?.user?.image ?? '/images/profile.avif'}
