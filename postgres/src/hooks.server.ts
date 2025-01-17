@@ -7,7 +7,7 @@ import { protectRoute } from '$lib/server/gatekeeper';
 // Sequence of middleware to run
 // 1. handleAuth - Handles authentication from @auth
 // 2. protectRoute - Our gatekeeper for RBAC (no role required by default)
-export const handle = sequence(handleAuth, protectRoute());
+export const handle: Handle = sequence(handleAuth, protectRoute());
 
 // Example of how to protect specific routes with roles:
 // You can create additional middleware for specific routes like this:

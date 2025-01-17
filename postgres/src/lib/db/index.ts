@@ -28,7 +28,7 @@ export const sql = postgres({
   port: dev ? Number(PUBLIC_DB_PORT || 5432) : Number(DB_PORT) || 5432,
   user: dev ? PUBLIC_DB_USER || 'postgres' : DB_USER,
   password: dev ? PUBLIC_DB_PASSWORD || 'postgres' : DB_PASSWORD,
-  database: dev ? PUBLIC_DB_NAME : DB_NAME,
+  database: dev ? PUBLIC_DB_NAME || 'your_db_name' : DB_NAME,
   ssl: dev ? false : DB_SSL === 'true',
   max: Number(MAX_CLIENTS) || 20,
   idle_timeout: Number(IDLE_TIMEOUT_MILLIS) / 1000 || 30, // Convert to seconds
@@ -44,7 +44,7 @@ export const pool = new Pool({
   port: dev ? Number(PUBLIC_DB_PORT) : Number(DB_PORT) || 5432,
   user: dev ? PUBLIC_DB_USER : DB_USER,
   password: dev ? PUBLIC_DB_PASSWORD : DB_PASSWORD,
-  database: dev ? PUBLIC_DB_NAME : DB_NAME,
+  database: dev ? PUBLIC_DB_NAME || 'your_db_name' : DB_NAME,
   ssl: dev ? false : DB_SSL === 'true',
   max: 5, // Lower max connections since this is only for auth
   idleTimeoutMillis: Number(IDLE_TIMEOUT_MILLIS) || 30000,

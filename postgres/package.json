@@ -6,7 +6,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "migrate": "bun -r dotenv/config node-pg-migrate --dotenv-path=.env.local",
+    "migrate": "bun -r dotenv/config node-pg-migrate --dotenv-path=.env",
     "migrate:production": "node-pg-migrate",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
