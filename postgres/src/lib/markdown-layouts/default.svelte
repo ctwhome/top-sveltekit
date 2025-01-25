@@ -6,10 +6,8 @@
 	let { children }: Props = $props();
 </script>
 
-<!-- DEFAULT Layout 🩻🩻🩻🩻🩻🩻 -->
-
-<div class="px-3 break-words -mt-20 overflow-auto w-full">
-	<div class="mx-auto prose sm:prose-lg py-20">
+<div class="-mt-20 w-full overflow-auto break-words px-3">
+	<div class="prose mx-auto py-20 sm:prose-lg">
 		{@render children?.()}
 	</div>
 </div>
