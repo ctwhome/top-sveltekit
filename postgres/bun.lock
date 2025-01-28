@@ -8,6 +8,7 @@
         "ctw-kit": "^1.0.39",
         "date-fns": "^4.1.0",
         "node-html-parser": "^7.0.1",
+        "postgres": "^3.4.5",
         "svelte-french-toast": "^1.2.0",
       },
       "devDependencies": {
