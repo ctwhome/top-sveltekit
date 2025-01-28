@@ -7,7 +7,6 @@
     "build": "vite build",
     "preview": "vite preview",
     "migrate": "source .env && DATABASE_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME node-pg-migrate",
-
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check . && eslint .",
@@ -48,7 +47,6 @@
     "mdsvex-relative-images": "^1.0.3",
     "node-pg-migrate": "^7.9.0",
     "pg": "^8.13.1",
-    "pg-native": "^3.2.0",
     "postcss": "^8.5.1",
     "postgres": "^3.4.5",
     "prettier": "^3.4.2",
