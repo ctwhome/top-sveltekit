@@ -68,25 +68,16 @@
     "vite": "^6.0.7",
     "vite-plugin-restart": "^0.4.2",
     "vite-plugin-static-copy": "^2.2.0",
-    "vitest": "^3.0.2"
-  },
-  "type": "module",
-  "resolutions": {
-    "estree-walker": "^3.0.0"
-  },
-  "peerDependencies": {
-    "estree-walker": "^3.0.0"
+    "vitest": "^3.0.2",
+    "@sveltejs/adapter-vercel": "^5.5.3"
   },
   "dependencies": {
     "@auth/sveltekit": "^1.7.4",
-    "@sveltejs/adapter-vercel": "^5.5.3",
     "ctw-kit": "^1.0.39",
     "date-fns": "^4.1.0",
     "estree-walker": "^3.0.0",
     "node-html-parser": "^7.0.1",
     "svelte-french-toast": "^1.2.0"
-  },
-  "overrides": {
-    "estree-walker": "^3.0.0"
   }
+
 }
