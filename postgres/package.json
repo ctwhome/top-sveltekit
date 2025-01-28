@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "svelte-kit sync && vite build",
     "preview": "vite preview",
     "migrate": "source .env && DATABASE_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME node-pg-migrate",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -72,6 +72,7 @@
     "vitest": "^3.0.2"
   },
   "type": "module",
+  "moduleResolution": "bundler",
   "dependencies": {
     "@auth/sveltekit": "^1.7.4",
     "ctw-kit": "^1.0.39",
