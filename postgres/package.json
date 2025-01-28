@@ -76,9 +76,10 @@
     "@auth/sveltekit": "^1.7.4",
     "ctw-kit": "^1.0.39",
     "date-fns": "^4.1.0",
-    "estree-walker": "^3.0.0",
     "node-html-parser": "^7.0.1",
     "svelte-french-toast": "^1.2.0"
+  },
+  "overrides": {
+    "estree-walker": "2.0.2"
   }
-
 }
