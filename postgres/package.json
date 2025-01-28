@@ -72,7 +72,7 @@
     "vitest": "^3.0.2"
   },
   "type": "module",
-  "moduleResolution": "bundler",
+  "moduleResolution": "NodeNext",
   "dependencies": {
     "@auth/sveltekit": "^1.7.4",
     "ctw-kit": "^1.0.39",
