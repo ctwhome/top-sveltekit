@@ -3,10 +3,7 @@ import {
   DB_PORT,
   DB_USER,
   DB_PASSWORD,
-  DB_NAME,
-  DB_SSL,
-  IDLE_TIMEOUT_MILLIS,
-  CONNECTION_TIMEOUT_MILLIS
+  DB_NAME
 } from "$env/static/private"
 
 import { dev } from '$app/environment';
@@ -21,10 +18,10 @@ const dbaccess = {
   user: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME || 'your_db_name',
-  ssl: dev ? false : DB_SSL === 'true',
+  ssl: dev ? false : true,
   max: 5, // Lower max connections since this is only for auth
-  idleTimeoutMillis: Number(IDLE_TIMEOUT_MILLIS) || 30000,
-  connectionTimeoutMillis: Number(CONNECTION_TIMEOUT_MILLIS) || 2000
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000
 };
 // Configure postgres.js connection for application queries
 export const sql = postgres(dbaccess);

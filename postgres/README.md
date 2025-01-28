@@ -16,23 +16,38 @@ by [ctwhome](https://ctwhome.com)
 
 ## Features
 
-- **Local-first architecture**: Data lives locally and syncs with the database seamlessly
 - **Simplicity in code**: Update Svelte stores locally and let syncing happen in the background
 - **Future scalability**: Real-time sync, offline-first capabilities
 - **Role-Based Access Control**: Server-side authorization with built-in role management
 
 
 ## Quick Start
+1. Copy `.env.example` to `.env` and fill in the required variables
 
+## Runnin with Docker
+It will run the database, migrations and frontend services.
 ```bash
-# Clone the repository
-bunx degit ctwhome/top-sveltekit <directory-name>
+docker compose up
+```
+### Feeding the database for devepment
+```bash
+# Start everything (including the seed service):
+docker compose --profile seed up
+# or just run the seed container on demand:
+docker compose --profile seed run seed
+```
 
-# Install dependencies
+### Docker utils
+```bash
+docker compose down -v # Remove all volumes, carefull all data will be lost.
+docker compose logs -f
+```
+
+
+## Running locally without docker and external database url (or i.e. local postgres running on port 5432)
+```bash
 bun install
-
-# Start development server
 bun dev
 ```
 
-Visit [http://localhost:5173](http://localhost:5173) to see your application.
+Visit [http://localhost:5173](http://localhost:5173) to open the application.

@@ -1,0 +1,72 @@
+services:
+  postgres:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-topsveltekit}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+
+  # It will run every time the database is started.
+  migrate:
+    image: oven/bun:1
+    working_dir: /app
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+    command: sh -c "sleep 5 && DATABASE_URL='postgres://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:${DB_PORT:-5432}/${DB_NAME:-topsveltekit}' bunx node-pg-migrate up"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+  frontend:
+    image: oven/bun:1
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+    command: sh -c "bun install && bun run dev"
+    # command: sh -c "bun install && bun run dev"
+    restart: unless-stopped
+
+
+  # Only run this if you want to seed the database with sample data
+  # `docker compose run seed`
+  seed:
+    profiles:
+      - seed
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      PGPASSWORD: ${DB_PASSWORD:-postgres}
+    command: psql -h postgres -U ${DB_USER:-postgres} -d ${DB_NAME:-topsveltekit} -f /seed-database/seed.sql
+    volumes:
+      - ./seed-database:/seed-database
+
+
+volumes:
+  postgres_data:

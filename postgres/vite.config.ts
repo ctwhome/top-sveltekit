@@ -15,7 +15,11 @@ const config = {
 	],
 	server: {
 		// Disable CORS locally to avoid CORS issues with the API in production
-		cors: false
+		cors: false,
+		// Needed for the API to work locally with Docker
+		host: '0.0.0.0',
+		port: 5173,
+		open: true,
 	},
 	// optimizeDeps: {
 	// 	disabled: true,

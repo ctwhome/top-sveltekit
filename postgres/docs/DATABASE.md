@@ -10,32 +10,6 @@ This project uses PostgreSQL as its primary database, with node-pg-migrate for d
 - SQL-based migrations for maximum flexibility
 - Located in the `migrations/` directory
 
-### Creating Migrations
-
-Create a new migration:
-```bash
-bun migrate create my_migration_name
-```
-
-This creates a new file: `migrations/XXX_my_migration_name.sql`
-
-### Running Migrations
-
-Development environment:
-```bash
-bun migrate up
-```
-
-Production environment:
-```bash
-bun migrate:production
-```
-
-### Rolling Back Migrations
-```bash
-bun migrate down
-```
-
 ## Database Schema
 
 ### Core Tables
