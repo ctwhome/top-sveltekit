@@ -74,7 +74,6 @@
   "type": "module",
   "moduleResolution": "NodeNext",
   "dependencies": {
-    "postgres": "^3.4.5",
     "@auth/sveltekit": "^1.7.4",
     "ctw-kit": "^1.0.39",
     "date-fns": "^4.1.0",
