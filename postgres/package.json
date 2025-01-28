@@ -71,12 +71,18 @@
     "vitest": "^3.0.2"
   },
   "type": "module",
-  "moduleResolution": "NodeNext",
+  "resolutions": {
+    "estree-walker": "^3.0.0"
+  },
+  "peerDependencies": {
+    "estree-walker": "^3.0.0"
+  },
   "dependencies": {
     "@auth/sveltekit": "^1.7.4",
     "@sveltejs/adapter-vercel": "^5.5.3",
     "ctw-kit": "^1.0.39",
     "date-fns": "^4.1.0",
+    "estree-walker": "^3.0.0",
     "node-html-parser": "^7.0.1",
     "svelte-french-toast": "^1.2.0"
   },
