@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: local
+    command:
+      - -c
+      - listen_addresses=*
+      - -c
+      - wal_level=logical
+
+  electric:
+    image: electricsql/electric:latest
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/local?sslmode=disable"
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
