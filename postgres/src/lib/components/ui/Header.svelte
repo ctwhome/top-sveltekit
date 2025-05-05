@@ -6,7 +6,7 @@
 	import IconamoonMenuBurgerHorizontalBold from '~icons/iconamoon/menu-burger-horizontal-bold';
 	import menuItems from '$lib/models/menu-itmes';
 
-	import { ThemeChange } from 'ctw-kit';
+	import ThemeChange from '$lib/components/ui/ThemeChange/ThemeChange.svelte';
 
 	let activeCategory = '';
 </script>
