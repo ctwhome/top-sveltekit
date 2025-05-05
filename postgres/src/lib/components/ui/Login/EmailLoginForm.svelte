@@ -54,32 +54,31 @@
 	aria-label="Email login form"
 >
 	<div class="space-y-3">
-		<div class="form-control">
-			<label for="email" class="sr-only">Email</label>
+		<div class="form-control-float">
 			<input
 				id="email"
 				bind:value={email}
 				type="email"
-				placeholder="Enter your email"
-				class="input input-bordered"
+				placeholder=" "
 				required
 				autocomplete="email"
 				disabled={isLoading}
+				aria-invalid={error && !validateEmail(email) ? 'true' : undefined}
 			/>
+			<label for="email">Email</label>
 		</div>
 
-		<div class="form-control">
-			<label for="password" class="sr-only">Password</label>
+		<div class="form-control-float">
 			<input
 				id="password"
 				bind:value={password}
 				type="password"
-				placeholder="Enter your password"
-				class="input input-bordered"
+				placeholder=" "
 				required
 				autocomplete="current-password"
 				disabled={isLoading}
 			/>
+			<label for="password">Password</label>
 		</div>
 
 		{#if error}

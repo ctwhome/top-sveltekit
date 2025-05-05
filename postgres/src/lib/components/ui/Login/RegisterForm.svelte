@@ -90,66 +90,62 @@
 	aria-label="Registration form"
 >
 	<div class="space-y-3">
-		<div class="form-control">
-			<label for="register-name" class="sr-only">Name</label>
+		<div class="form-control-float">
 			<input
 				id="register-name"
 				bind:value={name}
 				type="text"
-				placeholder="Enter your name"
-				class="input input-bordered"
+				placeholder=" "
 				required
 				autocomplete="name"
 				disabled={isLoading}
 				aria-invalid={error && !name ? 'true' : undefined}
 			/>
+			<label for="register-name">Name</label>
 		</div>
 
-		<div class="form-control">
-			<label for="register-email" class="sr-only">Email</label>
+		<div class="form-control-float">
 			<input
 				id="register-email"
 				bind:value={email}
 				type="email"
-				placeholder="Enter your email"
-				class="input input-bordered"
+				placeholder=" "
 				required
 				autocomplete="email"
 				disabled={isLoading}
 				aria-invalid={error && !validateEmail(email) ? 'true' : undefined}
 			/>
+			<label for="register-email">Email</label>
 		</div>
 
-		<div class="form-control">
-			<label for="register-password" class="sr-only">Password</label>
+		<div class="form-control-float">
 			<input
 				id="register-password"
 				bind:value={password}
 				type="password"
-				placeholder="Create password (min. 8 characters)"
-				class="input input-bordered"
+				placeholder=" "
 				required
 				autocomplete="new-password"
 				minlength="8"
 				disabled={isLoading}
 				aria-invalid={error && !validatePassword(password) ? 'true' : undefined}
-			/>
+				/>
+			<label for="register-password">Password (min. 8 characters)</label>
 		</div>
 
-		<div class="form-control">
-			<label for="register-confirm-password" class="sr-only">Confirm Password</label>
+		<div class="form-control-float">
 			<input
 				id="register-confirm-password"
 				bind:value={confirmPassword}
 				type="password"
-				placeholder="Confirm password"
-				class="input input-bordered"
+				placeholder=" "
 				required
 				autocomplete="new-password"
 				minlength="8"
 				disabled={isLoading}
 				aria-invalid={error && password !== confirmPassword ? 'true' : undefined}
 			/>
+			<label for="register-confirm-password">Confirm Password</label>
 		</div>
 
 		{#if error}

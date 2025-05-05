@@ -96,3 +96,25 @@ a[target='_blank'] {
 .toaster {
 	margin-top: 60px;
 }
+
+/* Floating label form styles */
+.form-control-float {
+  @apply relative;
+}
+
+.form-control-float input {
+  @apply h-12 pt-4 px-3 pb-1 w-full border border-base-300 rounded-lg bg-transparent;
+}
+
+.form-control-float label {
+  @apply absolute left-3 top-1/2 -translate-y-1/2 text-base-content/70 pointer-events-none transition-all duration-200 text-sm;
+}
+
+.form-control-float input:focus-within ~ label,
+.form-control-float input:not(:placeholder-shown) ~ label {
+  @apply transform -translate-y-3/4 text-xs text-primary;
+}
+
+.form-control-float input:focus-within {
+  @apply border-primary outline-none;
+}
