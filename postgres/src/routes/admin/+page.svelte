@@ -152,14 +152,14 @@
 											</option>
 										{/each}
 									</select>
-									<div class="flex-shrink-0">
+									<div class="shrink-0">
 										{#if user.roles.includes(Role.ADMIN)}
 											<div class="tooltip tooltip-left" data-tip="Admin user">
-												<ShieldCheck class="h-5 w-5 text-primary" />
+												<ShieldCheck class="h-5 w-5" />
 											</div>
 										{:else}
 											<div class="tooltip tooltip-left" data-tip="Regular user">
-												<UserCircle class="h-5 w-5 text-base-content/70" />
+												<UserCircle class="text-base-content/70 h-5 w-5" />
 											</div>
 										{/if}
 									</div>
@@ -170,7 +170,7 @@
 									<button tabindex="0" class="btn btn-ghost btn-sm">
 										<MoreVertical class="h-5 w-5" />
 									</button>
-									<ul class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow">
+									<ul class="menu dropdown-content rounded-box bg-base-100 z-1 w-52 p-2 shadow-sm">
 										<li>
 											<button
 												class="text-error"

@@ -5,48 +5,48 @@
  * Ported for PrismJS by Marc Backes [@themarcba]
  */
 
-code[class*="language-"],
-pre[class*="language-"] {
-  /* color: #f92aad; */
-  @apply text-primary;
-  /* text-shadow: 0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3; */
-  background: none;
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1em;
-  text-align: left;
-  white-space: pre;
-  word-spacing: normal;
-  word-break: normal;
-  word-wrap: normal;
-  line-height: 1.5;
+code[class*='language-'],
+pre[class*='language-'] {
+	/* color: #f92aad; */
+	@apply text-[var(--color-primary)];
+	/* text-shadow: 0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3; */
+	background: none;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
 
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
 
-  -webkit-hyphens: none;
-  -moz-hyphens: none;
-  -ms-hyphens: none;
-  hyphens: none;
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
 }
 
 /* Code blocks */
-pre[class*="language-"] {
-  padding: 1em;
-  margin: .5em 0;
-  overflow: auto;
+pre[class*='language-'] {
+	padding: 1em;
+	margin: 0.5em 0;
+	overflow: auto;
 }
 
-:not(pre)>code[class*="language-"],
-pre[class*="language-"] {
-  @apply bg-base-200;
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
+	@apply bg-[var(--color-base-200)];
 }
 
 /* Inline code */
-:not(pre)>code[class*="language-"] {
-  padding: .1em;
-  border-radius: .3em;
-  white-space: normal;
+:not(pre) > code[class*='language-'] {
+	padding: 0.1em;
+	border-radius: 0.3em;
+	white-space: normal;
 }
 
 .token.comment,
@@ -54,13 +54,11 @@ pre[class*="language-"] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  @apply text-accent
-  /* color: #8e8e8e; */
+	@apply /* color: #8e8e8e; */ text-[var(--color-accent)];
 }
 
 .token.punctuation {
-  @apply text-secondary
-  /* color: #ccc; */
+	@apply /* color: #ccc; */ text-[var(--color-secondary)];
 }
 
 .token.tag,
@@ -70,40 +68,35 @@ pre[class*="language-"] {
 .token.unit,
 .token.hexcode,
 .token.deleted {
-  @apply text-error;
-  /* color: #e2777a; */
+	@apply text-[var(--color-error)];
+	/* color: #e2777a; */
 }
 
 .token.property,
 .token.selector {
-  @apply text-success
-  /* color: #72f1b8; */
-  /* text-shadow: 0 0 2px #100c0f, 0 0 10px #257c5575, 0 0 35px #21272475; */
+	@apply /* color: #72f1b8; */ /* text-shadow: 0 0 2px #100c0f, 0 0 10px #257c5575, 0 0 35px #21272475; */ text-[var(--color-success)];
 }
 
 .token.function-name {
-  @apply text-info;
-  /* color: #6196cc; */
+	@apply text-[var(--color-info)];
+	/* color: #6196cc; */
 }
 
 .token.boolean,
 .token.selector .token.id,
 .token.function {
-  @apply text-primary
-  /* text-shadow: 0 0 2px #001716, 0 0 3px #03edf975, 0 0 5px #03edf975, 0 0 8px #03edf975; */
+	@apply /* text-shadow: 0 0 2px #001716, 0 0 3px #03edf975, 0 0 5px #03edf975, 0 0 8px #03edf975; */ text-[var(--color-primary)];
 }
 
 .token.class-name {
-  /* color: #fff5f6; */
-  @apply text-primary
-  /* text-shadow: 0 0 2px #000, 0 0 10px #fc1f2c75, 0 0 5px #fc1f2c75, 0 0 25px #fc1f2c75; */
+	/* color: #fff5f6; */
+	@apply /* text-shadow: 0 0 2px #000, 0 0 10px #fc1f2c75, 0 0 5px #fc1f2c75, 0 0 25px #fc1f2c75; */ text-[var(--color-primary)];
 }
 
 .token.constant,
 .token.symbol {
-  /* color: #f92aad; */
-  @apply text-accent
-  /* text-shadow: 0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3; */
+	/* color: #f92aad; */
+	@apply /* text-shadow: 0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3; */ text-[var(--color-accent)];
 }
 
 .token.important,
@@ -111,9 +104,8 @@ pre[class*="language-"] {
 .token.keyword,
 .token.selector .token.class,
 .token.builtin {
-  /* color: #f4eee4; */
-  @apply text-accent
-  /* text-shadow: 0 0 2px #393a33, 0 0 8px #f39f0575, 0 0 2px #f39f0575; */
+	/* color: #f4eee4; */
+	@apply /* text-shadow: 0 0 2px #393a33, 0 0 8px #f39f0575, 0 0 2px #f39f0575; */ text-[var(--color-accent)];
 }
 
 .token.string,
@@ -121,31 +113,30 @@ pre[class*="language-"] {
 .token.attr-value,
 .token.regex,
 .token.variable {
-  @apply text-accent
-  /* color: #f87c32; */
+	@apply /* color: #f87c32; */ text-[var(--color-accent)];
 }
 
 .token.operator,
 .token.entity,
 .token.url {
-  /* color: #67cdcc; */
-  @apply text-info
+	/* color: #67cdcc; */
+	@apply text-[var(--color-info)];
 }
 
 .token.important,
 .token.bold {
-  font-weight: bold;
+	font-weight: bold;
 }
 
 .token.italic {
-  font-style: italic;
+	font-style: italic;
 }
 
 .token.entity {
-  cursor: help;
+	cursor: help;
 }
 
 .token.inserted {
-  /* color: green; */
-  @apply text-success
+	/* color: green; */
+	@apply text-[var(--color-success)];
 }

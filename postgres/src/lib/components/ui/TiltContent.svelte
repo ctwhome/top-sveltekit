@@ -31,7 +31,7 @@
 >
 	<!-- <img
 		src={image?.default}
-		class="tilt rounded pointer-events-none h-[450px] w-full object-cover"
+		class="tilt rounded-sm pointer-events-none h-[450px] w-full object-cover"
 		alt="Jesse Ctw Profile"
 	/> -->
 	{@render children?.()}

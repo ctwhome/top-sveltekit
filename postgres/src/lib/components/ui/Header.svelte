@@ -14,18 +14,18 @@
 <nav class="bien-nav mb-10">
 	<div class="bien-glass"></div>
 	<div class="bien-glass-edge"></div>
-	<div class="container relative mx-auto py-2">
+	<div class="relative container mx-auto py-2">
 		<!--Desktop Header-->
 		<header class="flex items-center gap-3 px-2 sm:px-0">
 			<button
-				class="rounded-md p-2 transition-colors duration-200 hover:bg-base-200 sm:hidden"
+				class="hover:bg-base-200 rounded-md p-2 transition-colors duration-200 sm:hidden"
 				onclick={toggleMenu}
 				aria-label="Open menu"
 			>
 				<IconamoonMenuBurgerHorizontalBold class="size-6" />
 			</button>
 			<a
-				class="no-drag mr-3 h-auto max-w-[140px] flex-initial flex-shrink-0 select-none sm:max-w-[160px]"
+				class="no-drag mr-3 h-auto max-w-[140px] flex-initial shrink-0 select-none sm:max-w-[160px]"
 				href="/"
 			>
 				<Logo />
@@ -53,13 +53,13 @@
 	</div>
 </nav>
 
-<style lang="postcss">
+<style>
 	.menu-link {
-		@apply font-medium text-base-content text-opacity-80 transition hover:text-secondary hover:text-opacity-100;
+		/* @apply hover:text-secondary font-medium transition; */
 	}
 
 	.menu-link.active {
-		@apply text-primary;
+		@apply text-[var(--color-primary)];
 	}
 
 	/* Frosted navigation header */

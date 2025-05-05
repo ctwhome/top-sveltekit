@@ -3,10 +3,12 @@ import { defineConfig } from 'vite';
 import Icons from 'unplugin-icons/vite'
 import VitePluginRestart from 'vite-plugin-restart';
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import tailwindcss from "@tailwindcss/vite";
 
 const config = {
 	plugins: [
 		sveltekit(),
+		tailwindcss(),
 		Icons({
 			compiler: 'svelte',
 		}),

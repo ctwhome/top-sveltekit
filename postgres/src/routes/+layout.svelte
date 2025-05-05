@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '$lib/assets/css/app.css';
-	import '$lib/assets/css/code-highlighted-prisma.css';
 	import Header from '$components/ui/Header.svelte';
 	import Analytics from '$components/ui/Analytics.svelte';
 	import SideMenu from '$components/ui/SideMenu.svelte';

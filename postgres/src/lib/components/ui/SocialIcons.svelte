@@ -61,11 +61,23 @@
 	</a>
 </div>
 
-<style lang="postcss">
+<style>
 	.rotate-icon {
-		@apply transform transition hover:translate-x-1 hover:rotate-12 focus:scale-y-100;
+		@apply transform transition;
+	}
+	.rotate-icon:hover {
+		/* @apply translate-x-1 rotate-12; */
+	}
+	.rotate-icon:focus {
+		@apply scale-y-100;
 	}
 	.scale-icon {
-		@apply transform transition hover:scale-125 focus:scale-90;
+		@apply transform transition;
+	}
+	.scale-icon:hover {
+		@apply scale-125;
+	}
+	.scale-icon:focus {
+		@apply scale-90;
 	}
 </style>

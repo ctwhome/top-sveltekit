@@ -13,7 +13,7 @@
 		<div class="avatar pointer-events-none select-none">
 			<div class="mask mask-hexagon w-40">
 				<img
-					class="!object-contain"
+					class="object-contain"
 					src={$page.data?.session?.user?.image ?? '/images/profile.avif'}
 					alt="username"
 					on:error={(e: Event) => {
@@ -29,12 +29,12 @@
 
 		<div class="ml-10">
 			<div class="">
-				<div class="block text-3xl font-light leading-relaxed">
+				<div class="block text-3xl leading-relaxed font-light">
 					{$page.data?.session?.user?.name ||
 						$page.data?.session?.user?.email?.split('@')[0] ||
 						'User'}
 				</div>
-				<div class="block font-light leading-relaxed">
+				<div class="block leading-relaxed font-light">
 					{$page.data?.session?.user?.email || ''}
 				</div>
 			</div>
@@ -48,7 +48,7 @@
 			{/if}
 		</div>
 	</div>
-	<div class="border-b border-base-300"></div>
+	<div class="border-base-300 border-b"></div>
 
 	<ChangePasswordModal bind:showModal={showPasswordModal} />
 </div>

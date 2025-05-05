@@ -47,7 +47,7 @@
 			type="text"
 			bind:value={newTodoTitle}
 			placeholder="Add a new todo..."
-			class="input input-bordered flex-grow"
+			class="input input-bordered grow"
 		/>
 		<button type="submit" class="btn btn-primary">
 			<AddIcon class="h-5 w-5" />
@@ -72,7 +72,7 @@
 		{#each todoStore.todos as todo (todo.id)}
 			<div class="card bg-base-200">
 				<div class="card-body flex-row items-center justify-between p-4">
-					<div class="flex flex-grow items-center gap-3">
+					<div class="flex grow items-center gap-3">
 						<input
 							type="checkbox"
 							checked={todo.completed}

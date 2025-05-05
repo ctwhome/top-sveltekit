@@ -1,29 +1,28 @@
 <script lang="ts">
 	import Socialicons from '$components/ui/SocialIcons.svelte';
 	let { class: className = undefined } = $props();
-	
 </script>
 
 <section class={' ' + className}>
 	<div class="flex w-full">
-		<div class="w-1/3 flex">
-			<div class="w-1/3 py-0 h-1" style="background: #456563;"></div>
-			<div class="w-1/3 py-0 h-1" style="background: #5A877E;"></div>
-			<div class="w-1/3 py-0 h-1" style="background: #FDC343;"></div>
+		<div class="flex w-1/3">
+			<div class="h-1 w-1/3 py-0" style="background: #456563;"></div>
+			<div class="h-1 w-1/3 py-0" style="background: #5A877E;"></div>
+			<div class="h-1 w-1/3 py-0" style="background: #FDC343;"></div>
 		</div>
-		<div class="w-1/3 flex">
-			<div class="w-1/3 py-0 h-1" style="background: #E99877;"></div>
-			<div class="w-1/3 py-0 h-1" style="background: #A4574E;"></div>
-			<div class="w-1/3 py-0 h-1" style="background: #FDC343;"></div>
+		<div class="flex w-1/3">
+			<div class="h-1 w-1/3 py-0" style="background: #E99877;"></div>
+			<div class="h-1 w-1/3 py-0" style="background: #A4574E;"></div>
+			<div class="h-1 w-1/3 py-0" style="background: #FDC343;"></div>
 		</div>
-		<div class="w-1/3 flex">
-			<div class="w-1/3 py-0 h-1" style="background: #456563;"></div>
-			<div class="w-1/3 py-0 h-1" style="background: #5A877E;"></div>
-			<div class="w-1/3 py-0 h-1" style="background: #FDC343;"></div>
+		<div class="flex w-1/3">
+			<div class="h-1 w-1/3 py-0" style="background: #456563;"></div>
+			<div class="h-1 w-1/3 py-0" style="background: #5A877E;"></div>
+			<div class="h-1 w-1/3 py-0" style="background: #FDC343;"></div>
 		</div>
 	</div>
-	<div class="container flex-wrap flex items-center mx-auto px-4 py-6">
-		<div class="flex items-center gap-5 text-base-content text-opacity-60">
+	<div class="container mx-auto flex flex-wrap items-center px-4 py-6">
+		<div class="flex items-center gap-5">
 			<svg width="70" viewBox="0 0 168 161" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path
 					fill-rule="evenodd"
@@ -58,7 +57,7 @@
 				should empower people.
 			</div>
 		</div>
-		<div class="flex mx-auto sm:mr-0 mt-10 gap-10 items-center">
+		<div class="mx-auto mt-10 flex items-center gap-10 sm:mr-0">
 			<a
 				href="https://ctwhome.com"
 				target="_blank"
