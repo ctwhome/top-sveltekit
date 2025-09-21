@@ -13,13 +13,38 @@
 
 	let textarea: HTMLTextAreaElement = $state();
 	let modal: HTMLDialogElement = $state();
+	let browserInfo = $state({
+		browser: '',
+		platform: '',
+		currentPath: ''
+	});
 
 	export const openFeedbackModal = writable(() => {});
 
+	function detectBrowser(): string {
+		const userAgent = navigator.userAgent;
+		if (userAgent.includes('Firefox')) return 'Firefox';
+		if (userAgent.includes('Chrome')) return 'Chrome';
+		if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
+		if (userAgent.includes('Edge')) return 'Edge';
+		if (userAgent.includes('Opera') || userAgent.includes('OPR')) return 'Opera';
+		return 'Unknown Browser';
+	}
+
+	function updateBrowserInfo() {
+		browserInfo = {
+			browser: detectBrowser(),
+			platform: navigator.platform || 'Unknown Platform',
+			currentPath: window.location.pathname
+		};
+	}
+
 	onMount(() => {
 		modal = document.getElementById('feedback_modal') as HTMLDialogElement;
+		updateBrowserInfo();
 
 		openFeedbackModal.set(() => {
+			updateBrowserInfo();
 			modal.showModal();
 		});
 	});
@@ -108,7 +133,7 @@
 </script>
 
 {#if showButton}
-	<button class="btn btn-sm" onclick={() => modal.showModal()}>Feedback</button>
+	<button class="btn btn-sm" onclick={() => { updateBrowserInfo(); modal.showModal(); }}>Feedback</button>
 {/if}
 
 <dialog id="feedback_modal" class="modal">
@@ -122,6 +147,10 @@
 			placeholder="Write your feedback here"
 			rows="6"
 		></textarea>
+		<div class="mt-2 text-xs text-base-content/50">
+			<div>Page: {browserInfo.currentPath}</div>
+			<div>Browser: {browserInfo.browser} • Platform: {browserInfo.platform}</div>
+		</div>
 		<div class="modal-action justify-between">
 			<button class="btn" onclick={closeModal}>Cancel</button>
 			<button class="btn btn-primary" onclick={sendFeedback}>Send Feedback</button>
