@@ -44,6 +44,6 @@
 	<Header />
 	<SideMenu />
 	<slot />
-	<FooterMain />
+	<FooterMain version={data.version} />
 	<DevEnvironmentBanner dbInfo={data.dbInfo} />
 </div>

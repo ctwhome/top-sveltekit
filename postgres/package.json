@@ -12,11 +12,16 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "postbuild": "vite build --mode preview",
-    "seed": "source .env && psql $DATABASE_URL -f seed-database/seed.sql"
+    "seed": "source .env && psql $DATABASE_URL -f seed-database/seed.sql",
+    "release": "semantic-release"
   },
   "devDependencies": {
     "@auth/pg-adapter": "^1.7.4",
     "@iconify/json": "^2.2.297",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.6",
+    "@sindresorhus/slugify": "^3.0.0",
     "@sveltejs/adapter-node": "^5.2.12",
     "@sveltejs/adapter-vercel": "^5.5.3",
     "@sveltejs/kit": "^2.16.0",
@@ -56,6 +61,7 @@
     "remark-external-links": "^9.0.1",
     "remark-reading-time": "^2.0.1",
     "remark-toc": "^9.0.0",
+    "semantic-release": "^24.2.9",
     "svelte": "^5.19.0",
     "svelte-check": "^4.1.4",
     "svelte-preprocess-import-assets": "^1.1.0",

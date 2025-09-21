@@ -1,6 +1,15 @@
 <script lang="ts">
 	import Socialicons from '$components/ui/SocialIcons.svelte';
-	let { class: className = undefined } = $props();
+
+	interface Props {
+		class?: string;
+		version?: string;
+	}
+
+	let { class: className = undefined, version = '1.0.0' }: Props = $props();
+
+	// Extract repository info for GitHub releases link
+	const repoUrl = 'https://github.com/ctwhome/top-sveltekit';
 </script>
 
 <section class={' ' + className}>
@@ -66,7 +75,16 @@
 				Latest work
 			</a>
 			<Socialicons />
-			<!-- todo -->
+			<!-- Version link -->
+			<a
+				href="{repoUrl}/releases/tag/v{version}"
+				target="_blank"
+				rel="noopener"
+				class="text-xs opacity-50 hover:opacity-70 transition-opacity"
+				title="View release notes"
+			>
+				v{version}
+			</a>
 		</div>
 	</div>
 </section>

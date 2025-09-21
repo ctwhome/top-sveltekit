@@ -3,6 +3,9 @@
 A unified full-stack template with SvelteKit (Svelte 5), TailwindCSS, DaisyUI, AuthJS, Postgres, and more.\
 by [ctwhome](https://ctwhome.com)
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![Semantic Release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 ## Documentation
 - [Installation Guide](docs/INSTALLATION.md) - Complete setup instructions
@@ -10,6 +13,7 @@ by [ctwhome](https://ctwhome.com)
 - [Database Guide](docs/DATABASE.md) - Database setup and migrations
 - [Authentication Guide](docs/AUTH.md) - Authentication system documentation
 - [API Documentation](docs/API.md) - Available API endpoints
+- [Versioning Guide](docs/VERSIONING.md) - Semantic versioning and release management
 
 
 ![System Architecture](docs/diagram.excalidraw.png)
@@ -19,6 +23,8 @@ by [ctwhome](https://ctwhome.com)
 - **Simplicity in code**: Update Svelte stores locally and let syncing happen in the background
 - **Future scalability**: Real-time sync, offline-first capabilities
 - **Role-Based Access Control**: Server-side authorization with built-in role management
+- **Automated Versioning**: Semantic versioning with conventional commits
+- **Release Management**: Automated changelog generation and GitHub releases
 
 
 ## Quick Start
@@ -51,3 +57,27 @@ bun dev
 ```
 
 Visit [http://localhost:5173](http://localhost:5173) to open the application.
+
+## Development
+
+### Committing Changes
+This project supports [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning:
+
+```bash
+# Regular commits work normally
+git commit -m "update readme"
+
+# Use conventional format for automatic versioning
+git commit -m "feat: add new feature"  # Minor version bump
+git commit -m "fix: resolve bug"       # Patch version bump
+```
+
+No enforcement - commit as you prefer! See [Versioning Guide](docs/VERSIONING.md) for details.
+
+### Release Process
+Releases are automated via GitHub Actions when pushing to `main`:
+- Automatic version bumping based on commit types
+- Changelog generation
+- GitHub release creation
+
+View releases at [Releases](../../releases) and changelog at [CHANGELOG.md](CHANGELOG.md).
