@@ -1,0 +1,29 @@
+{
+  "branches": ["main"],
+  "tagFormat": "postgres-v${version}",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "postgres/CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false,
+        "pkgRoot": "postgres"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["postgres/package.json", "postgres/CHANGELOG.md"],
+        "message": "chore(postgres): release ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    "@semantic-release/github"
+  ]
+}

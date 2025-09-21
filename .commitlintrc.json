@@ -1,0 +1,19 @@
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "postgres",
+        "postgres-rls",
+        "electric",
+        "jazz",
+        "tinybase",
+        "root",
+        "deps",
+        "release"
+      ]
+    ]
+  }
+}

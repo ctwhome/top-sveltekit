@@ -1,5 +1,5 @@
 {
-	"name": "top-sveltekit",
+	"name": "@top-sveltekit/postgres-rls",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {

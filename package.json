@@ -1,0 +1,30 @@
+{
+  "name": "top-sveltekit-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "postgres",
+    "postgres-rls",
+    "electric",
+    "jazz",
+    "tinybase"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ctwhome/top-sveltekit.git"
+  },
+  "scripts": {
+    "release": "semantic-release",
+    "release:postgres": "cd postgres && semantic-release",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.6",
+    "husky": "^9.0.11",
+    "semantic-release": "^24.2.9"
+  }
+}

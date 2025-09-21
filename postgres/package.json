@@ -1,7 +1,12 @@
 {
-  "name": "top-sveltekit",
+  "name": "@top-sveltekit/postgres",
   "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ctwhome/top-sveltekit.git",
+    "directory": "postgres"
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && vite build",
