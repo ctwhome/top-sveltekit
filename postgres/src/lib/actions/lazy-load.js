@@ -5,6 +5,10 @@ let options = {
 	threshold: 0
 };
 
+/**
+ * @param {HTMLImageElement} image
+ * @param {string} src
+ */
 export const lazyLoad = (image, src) => {
 	const loaded = () => {
 		//image.classList.add('visible')                          // doesn't work in REPL

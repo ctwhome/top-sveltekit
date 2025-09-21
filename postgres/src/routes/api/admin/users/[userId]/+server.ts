@@ -9,7 +9,7 @@ export async function DELETE({ params, locals }: RequestEvent) {
     throw error(401, 'Unauthorized');
   }
 
-  const userRole = session.user.roles?.[0];
+  const userRole = (session.user as any).roles?.[0];
   if (userRole !== Role.ADMIN) {
     throw error(403, 'Forbidden');
   }

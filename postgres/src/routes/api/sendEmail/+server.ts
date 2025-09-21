@@ -35,6 +35,6 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: true, message: 'Feedback sent successfully' });
   } catch (error) {
     console.error('Error sending feedback email:', error);
-    return json({ success: false, message: 'Failed to send feedback: ' + error.message }, { status: 500 });
+    return json({ success: false, message: 'Failed to send feedback: ' + (error as Error).message }, { status: 500 });
   }
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import VanillaTilt from 'vanilla-tilt';
-	let tiltImage: HTMLElement | HTMLElement[] = $state();
+	let tiltImage: HTMLElement | HTMLElement[] | undefined = $state();
 
 	let { class: className = undefined, children } = $props();
 	
@@ -20,7 +20,9 @@
 			'max-glare': 0.5,
 			'glare-prerender': false
 		};
-		VanillaTilt.init(tiltImage, tiltOtions);
+		if (tiltImage) {
+			VanillaTilt.init(tiltImage, tiltOtions);
+		}
 	});
 </script>
 

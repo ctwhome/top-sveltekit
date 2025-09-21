@@ -9,6 +9,8 @@ if (browser) {
   throw new Error(`posts can only be imported server-side`)
 }
 
+import type { SvelteComponent } from 'svelte';
+
 type Glob = { default: SvelteComponent; metadata: Record<string, any> };
 
 
@@ -48,16 +50,16 @@ export const content = Object.entries(import.meta.glob<Glob>('/src/work/**/*.md'
         )
         : undefined,
 
-      preview: {
+      preview: preview ? {
         html: preview.toString(),
         // text-only preview (i.e no html elements), used for SEO
-        text: preview.structuredText ?? preview.toString()
-      },
+        text: (preview as any).structuredText ?? preview.toString()
+      } : undefined,
 
     }
   })
   // sort by date
-  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime())
   // add references to the next/previous post
   .map((post, index, allPosts) => ({
     ...post,
@@ -65,7 +67,7 @@ export const content = Object.entries(import.meta.glob<Glob>('/src/work/**/*.md'
     previous: allPosts[index + 1]
   }))
 
-function addTimezoneOffset(date) {
+function addTimezoneOffset(date: Date | string) {
   const offsetInMilliseconds = new Date().getTimezoneOffset() * 60 * 1000
   return new Date(new Date(date).getTime() + offsetInMilliseconds)
 }

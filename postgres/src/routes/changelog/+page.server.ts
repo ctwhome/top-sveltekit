@@ -10,7 +10,7 @@ export const load: PageServerLoad = async () => {
 		const content = await readFile(changelogPath, 'utf-8');
 
 		// Process markdown server-side
-		const processed = await compile(content, mdsvexConfig);
+		const processed = await compile(content, mdsvexConfig as any);
 
 		// Extract just the HTML body content
 		const html = processed?.code
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async () => {
 	} catch (error) {
 		console.error('Error reading changelog:', error);
 		const fallback = '# Changelog\n\nNo changelog available.';
-		const processed = await compile(fallback, mdsvexConfig);
+		const processed = await compile(fallback, mdsvexConfig as any);
 		return {
 			changelog: fallback,
 			changelogHtml: processed?.code || '<h1>Changelog</h1><p>No changelog available.</p>'

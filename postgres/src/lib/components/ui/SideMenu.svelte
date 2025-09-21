@@ -5,7 +5,7 @@
 	import FeedbackButton from '$lib/components/ui/feedback/FeedbackButton.svelte';
 	import { onMount } from 'svelte';
 
-	let containerElement: HTMLElement = $state();
+	let containerElement: HTMLElement | undefined = $state();
 	let startX: number;
 	let currentX: number;
 	let isDragging = false;
@@ -18,15 +18,19 @@
 	const updatePosition = (x: number) => {
 		const position = Math.max(-menuWidth, Math.min(0, x));
 		const progress = Math.min((position + menuWidth) / menuWidth, 0.5); // Cap at 0.5 (50% opacity)
-		containerElement.style.setProperty('--menu-position', `${position}px`);
-		containerElement.style.setProperty('--overlay-opacity', progress.toString());
+		if (containerElement) {
+			containerElement.style.setProperty('--menu-position', `${position}px`);
+			containerElement.style.setProperty('--overlay-opacity', progress.toString());
+		}
 	};
 
 	const handleTouchStart = (event: TouchEvent) => {
 		startX = event.touches[0].clientX;
 		currentX = menuPosition;
 		isDragging = false;
-		containerElement.style.setProperty('--transition-duration', '0s');
+		if (containerElement) {
+			containerElement.style.setProperty('--transition-duration', '0s');
+		}
 	};
 
 	const handleTouchMove = (event: TouchEvent) => {
@@ -48,7 +52,9 @@
 	};
 
 	const handleTouchEnd = () => {
-		containerElement.style.setProperty('--transition-duration', '0.2s');
+		if (containerElement) {
+			containerElement.style.setProperty('--transition-duration', '0.2s');
+		}
 
 		if (isDragging) {
 			const closeThreshold = menuWidth * 0.4;

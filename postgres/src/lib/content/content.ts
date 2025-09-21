@@ -7,10 +7,10 @@
 
 // import { get } from "svelte/store"
 const content = import.meta.glob('$content/**/*.md', { eager: true })
-const filtered = [];
+const filtered: Array<{metadata: any; slug?: string; prevPost: null; nextPost: null}> = [];
 
 for (const path in content) {
-  const { metadata } = content[path];
+  const { metadata } = content[path] as any;
   // Assuming that the MDsveX transformed content includes a `.toString()` method to get raw Markdown
   // If not, you might need to adjust this depending on what `content` actually includes
   // const markdown = rawContent.toString();
@@ -24,9 +24,9 @@ for (const path in content) {
 }
 // filter out the TEMPLATE and content folder
 const posts = filtered
-  .filter(filteredPost => !filteredPost.slug.includes('TEMPLATE'))
-  .filter(filteredPost => !filteredPost.slug.includes('content'))
-  .sort((a, b) => new Date(b.metadata.date) - new Date(a.metadata.date));
+  .filter(filteredPost => filteredPost.slug && !filteredPost.slug.includes('TEMPLATE'))
+  .filter(filteredPost => filteredPost.slug && !filteredPost.slug.includes('content'))
+  .sort((a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime());
 
 
 export { content, posts }

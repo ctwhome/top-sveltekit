@@ -1,4 +1,4 @@
-export const fetchData = async (url: string, method?: 'GET' | 'POST', data?: any) => {
+export const fetchData = async (url: string, method?: 'GET' | 'POST', postData?: any) => {
   try {
     if (method === 'POST') {
       const response = await fetch(url, {
@@ -6,7 +6,7 @@ export const fetchData = async (url: string, method?: 'GET' | 'POST', data?: any
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(postData),
       });
       const data = await response.json();
       return data;
@@ -19,7 +19,7 @@ export const fetchData = async (url: string, method?: 'GET' | 'POST', data?: any
     }
 
   } catch (error) {
-    console.error('Error fetching data:', error.message);
+    console.error('Error fetching data:', (error as Error).message);
     return [];
   }
 };

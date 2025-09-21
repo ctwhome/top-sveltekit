@@ -8,7 +8,7 @@
 
 	let numberFiles = $state({ rootName: '', directories: 0, files: 0 });
 	let loadingFiles = false;
-	let db = null;
+	let db: any = null;
 	let arrayTree = [];
 	let tree = $state({});
 	// Object.keys(tree).length !== 0
@@ -35,7 +35,7 @@
 		await deleteDB('db');
 	}
 
-	async function fileClicked(fileHandle) {
+	async function fileClicked(fileHandle: any) {
 		console.log('📂 fileClicked', fileHandle);
 		try {
 			if (fileHandle.handle.kind === 'file') {
@@ -55,7 +55,7 @@
 
 	async function open() {
 		try {
-			const directoryHandle = await window.showDirectoryPicker();
+			const directoryHandle = await (window as any).showDirectoryPicker();
 			console.log('📁 directoryHandle', directoryHandle);
 			loadingFiles = true;
 			tree = {};
@@ -75,7 +75,7 @@
 	/**
 	 * Read recursively all files and subdirectories
 	 */
-	async function recursive(directoryHandle, path = '/') {
+	async function recursive(directoryHandle: any, path = '/') {
 		try {
 			for await (const [name, handle] of directoryHandle) {
 				if (handle.kind === 'directory') {
@@ -87,7 +87,7 @@
 				}
 				// Make vue reactive when changing the object ==> tree[path + name] = { name, handle }
 				// $set(tree, path + name, { name, handle })
-				tree[path + name + '/'] = { name, handle };
+				(tree as any)[path + name + '/'] = { name, handle };
 			}
 		} catch (error) {
 			console.error(error);
@@ -112,9 +112,9 @@
 	<div class="btn" onclick={open}>Open directory</div>
 	<div>
 		<pre>{JSON.stringify(numberFiles, null, 2)}</pre>
-		{#each Object.values(tree) as { name, handle }}
-			<div class="hover:bg-gray-500 cursor-pointer" onclick={() => fileClicked(handle)}>
-				{name}
+		{#each Object.values(tree) as item}
+			<div class="hover:bg-gray-500 cursor-pointer" onclick={() => fileClicked((item as any).handle)}>
+				{(item as any).name}
 			</div>
 			<!--      <div>{item[0]} -  <pre>{JSON.stringify(item[1], null, 2)}</pre>{item[1]}</div>-->
 			<!--      <div class="flex">-->

@@ -24,7 +24,7 @@ export const protectRoute = (requiredRole?: Role): Handle => {
 
     if (session?.user) {
       // Get role from session (set in JWT token)
-      const userRole = session.user.roles?.[0] || Role.USER;
+      const userRole = (session.user as any).roles?.[0] || Role.USER;
 
       // Check role if required
       if (requiredRole && !hasRequiredRole(userRole, requiredRole)) {

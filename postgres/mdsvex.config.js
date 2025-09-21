@@ -14,12 +14,12 @@ import readingTime from 'remark-reading-time';
 export default {
   extensions: ['.svx', '.md'],
   smartypants: {
-    dashes: 'oldschool'
+    dashes: /** @type {'oldschool'} */ ('oldschool')
   },
   layout: {
-    _: "/src/lib/markdown-layouts/default.svelte", // Default layout for markdown files
-    blog: "/src/lib/markdown-layouts/blog.svelte",
-    project: "/src/lib/markdown-layouts/project.svelte",
+    _: "./src/lib/markdown-layouts/default.svelte", // Default layout for markdown files
+    blog: "./src/lib/markdown-layouts/blog.svelte",
+    project: "./src/lib/markdown-layouts/project.svelte",
   },
   remarkPlugins: [
     videos,
@@ -41,10 +41,11 @@ export default {
 
 /**
  * Adds support to video files in markdown image links
+ * @returns {Function} Remark transformer
  */
 function videos() {
   const extensions = ['mp4', 'webm']
-  return function transformer(tree) {
+  return function transformer(/** @type {any} */ tree) {
     visit(tree, 'image', (node) => {
       if (extensions.some((ext) => node.url.endsWith(ext))) {
         node.type = 'html'
