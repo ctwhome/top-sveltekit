@@ -75,6 +75,7 @@
     "@auth/sveltekit": "^1.7.4",
     "ctw-kit": "^1.0.39",
     "date-fns": "^4.1.0",
+    "eruda": "^3.4.3",
     "node-html-parser": "^7.0.1",
     "svelte-french-toast": "^1.2.0"
   },
