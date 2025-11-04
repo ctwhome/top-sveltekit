@@ -1,3 +1,8 @@
+> ⚠️ **This repository has been moved to [top-frameworks monorepo](https://github.com/ctwhome/top-frameworks/tree/main/top-sveltekit)**
+> 
+> This repository is now archived. All development continues in the monorepo.
+> Please update your bookmarks and references.
+
 # Top SvelteKit Projects with Different Technologies and Databases
 
 Examples to showcase the different technologies and databases that can be used with SvelteKit.
